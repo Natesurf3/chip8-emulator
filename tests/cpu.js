@@ -30,13 +30,34 @@ a700 f255 a804 fa33 f265 f029 6d32 6e00
 dde5 7d05 f129 dde5 7d05 f229 dde5 a700
 f265 a2b4 00ee 6a00 6019 00ee 3723`
 
+const SCREEN_LENGTH = 32
+const SCREEN_HEIGHT = 64
+
 class Display {
 	constructor() {
-		this.pixels = new Array(32*64).fill(0);
+		this.pixels = new Array(SCREEN_LENGTH*SCREEN_HEIGHT).fill(0);
 	}
 
 	clear() {
-		console.log("Display cleared")
+		this.pixels = new Array(SCREEN_LENGTH*SCREEN_HEIGHT).fill(0);
+	}
+
+	add_sprite_Row(x, y, byte) {
+		var start_loc_in_buffer = y * 32 + x
+		const wrap_at = 32 - x
+
+		for (var i = 0; i++; i < 8) {
+			const bit_loc = start_loc_in_buffer + i % SCREEN_LENGTH
+			const pixel_in_sprite = (byte & (1 << (8 - i)))
+			const next_pixel = this.pixels[bit_loc] ^ pixel_in_sprite
+
+			this.pixels[bit_loc] = next_pixel
+		}
+	}
+	add_sprite(x, y, sprite) {
+		for (var i = 0; i++; i <= sprite.length) {
+			this.add_sprite_row(x, y, sprite[i])
+		}
 	}
 }
 
@@ -83,15 +104,15 @@ class VRegister {
 
 class VRegisters {
 	constructor() {
-		this.registers = Array(16).fill(VRegister.zero())
+		this.registers = Array(16).fill(new VRegister)
 	}
 
 	get(idx) {
-		return this.registers[idx]
+		return this.registers[idx].get()
 	}
 
 	set(idx, value) {
-		this.registers[idx] = value
+		this.registers[idx].set(value)
 	}
 
 	add(idx, val) {
@@ -133,9 +154,17 @@ class CPU {
 		return (parseInt(this.rom[loc], 16) << 8) + (parseInt(this.rom[loc+1, 16]));
 	}
 
+	get_sprite(start_location, number_of_bytes) {
+		return this.rom.slice(start_location, start_location + number_of_bytes)
+	}
+
 	decode(instruction) {
 		const family = (instruction & 0xF000) >> 12
 		const rest = (instruction & 0x0FFF)
+		const low_nibble_of_higher_byte = (instruction & 0x0F00) >> 8
+		const low_byte = (instruction & 0x00FF)
+
+		let v_reg_idx = null // Seems bad, but I can't define it multiple times in the switch.
 
 		switch (family) {
 			case 0: // display clear/
@@ -151,15 +180,44 @@ class CPU {
 				this.stack.push(this.pc)
 				this.pc = rest
 				break;
-			case 0x7:
-				const v_reg = (rest & 0x0F00) >> 8
-				const value_to_add = (rest & 0x00FF)
+			case 3:
+				console.log(`${instruction.toString(16)}: ${this.v_registers.get(low_nibble_of_higher_byte)} == ${low_byte}? -> pc += 2`)
+				v_reg_idx = low_nibble_of_higher_byte
+				const value_to_compare = low_byte
 
-				this.v_reg
+				if (this.v_registers.get(v_reg_idx) == value_to_compare) this.pc += 2
+
+				break;
+			case 0x6:
+				console.log(`${instruction.toString(16)}: Setting register ${low_nibble_of_higher_byte} to ${low_byte}.`)
+				v_reg_idx = low_nibble_of_higher_byte
+				const value_to_set = low_byte
+
+				this.v_registers.set(v_reg_idx, value_to_set)
+				break;
+			case 0x7:
+				console.log(`${instruction.toString(16)}: Adding value ${low_byte} to register ${low_nibble_of_higher_byte}`)
+				v_reg_idx = low_nibble_of_higher_byte
+				const value_to_add = low_byte
+
+				this.v_registers.add(v_reg_idx, value_to_add)
+				break;
 			case 0xa:
-				const val = (instruction && 0)
 				console.log(`${instruction.toString(16)}: Setting i register to ${rest}`)
 				this.setIRegister(rest)
+				break;
+			case 0xd:
+				const vx_idx = low_nibble_of_higher_byte
+				const vy_idx = (low_byte & 0xF0) >> 4
+				const start_location = this.i_reg
+				const sprite_height = (low_byte & 0x0F) // number of bytes to retrieve
+				const next_x = this.v_registers.get(vx_idx)
+				const next_y = this.v_registers.get(vy_idx)
+				console.log(`Drawing sprite of height ${sprite_height} from loc: ${start_location} to (${next_x}, ${next_y}).`)
+
+				const sprite = this.get_sprite(start_location, sprite_height)
+				this.display.add_sprite(next_x, next_y, sprite)
+
 				break;
 			default:
 				throw new Error(`Opcode "${((instruction & 0xF000) >> 12).toString(16)}" not implemented. [${instruction.toString(16)}]`)
