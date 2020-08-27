@@ -1,37 +1,26 @@
-const program = `a2b4 23e6 22b6 7001 d011 3025 1206 71ff
-d011 601a d011 6025 3100 120e c470 4470
-121c c303 601e 6103 225c f515 d014 3f01
-123c d014 71ff d014 2340 121c e7a1 2272
-e8a1 2284 e9a1 2296 e29e 1250 6600 f615
-f607 3600 123c d014 7101 122a a2c4 f41e
-6600 4301 6604 4302 6608 4303 660c f61e
-00ee d014 70ff 2334 3f01 00ee d014 7001
-2334 00ee d014 7001 2334 3f01 00ee d014
-70ff 2334 00ee d014 7301 4304 6300 225c
-2334 3f01 00ee d014 73ff 43ff 6303 225c
-2334 00ee 8000 6705 6806 6904 611f 6510
-6207 00ee 40e0 0000 40c0 4000 00e0 4000
-4060 4000 4040 6000 20e0 0000 c040 4000
-00e0 8000 4040 c000 00e0 2000 6040 4000
-80e0 0000 40c0 8000 c060 0000 40c0 8000
-c060 0000 80c0 4000 0060 c000 80c0 4000
-0060 c000 c0c0 0000 c0c0 0000 c0c0 0000
-c0c0 0000 4040 4040 00f0 0000 4040 4040
-00f0 0000 d014 6635 76ff 3600 1338 00ee
-a2b4 8c10 3c1e 7c01 3c1e 7c01 3c1e 7c01
-235e 4b0a 2372 91c0 00ee 7101 1350 601b
-6b00 d011 3f00 7b01 d011 7001 3025 1362
-00ee 601b d011 7001 3025 1374 8e10 8de0
-7eff 601b 6b00 d0e1 3f00 1390 d0e1 1394
-d0d1 7b01 7001 3025 1386 4b00 13a6 7dff
-7eff 3d01 1382 23c0 3f01 23c0 7a01 23c0
-80a0 6d07 80d2 4004 75fe 4502 6504 00ee
-a700 f255 a804 fa33 f265 f029 6d32 6e00
-dde5 7d05 f129 dde5 7d05 f229 dde5 a700
-f265 a2b4 00ee 6a00 6019 00ee 3723`
+const program = `6e05 6500 6b06 6a00 a30c dab1 7a04 3a40
+1208 7b02 3b12 1206 6c20 6d1f a310 dcd1
+22f6 6000 6100 a312 d011 7008 a30e d011
+6040 f015 f007 3000 1234 c60f 671e 6801
+69ff a30e d671 a310 dcd1 6004 e0a1 7cfe
+6006 e0a1 7c02 603f 8c02 dcd1 a30e d671
+8684 8794 603f 8602 611f 8712 471f 12ac
+4600 6801 463f 68ff 4700 6901 d671 3f01
+12aa 471f 12aa 6005 8075 3f00 12aa 6001
+f018 8060 61fc 8012 a30c d071 60fe 8903
+22f6 7501 22f6 4560 12de 1246 69ff 8060
+80c5 3f01 12ca 6102 8015 3f01 12e0 8015
+3f01 12ee 8015 3f01 12e8 6020 f018 a30e
+7eff 80e0 8004 6100 d011 3e00 1230 12de
+78ff 48fe 68ff 12ee 7801 4802 6801 6004
+f018 69ff 1270 a314 f533 f265 f129 6337
+6400 d345 7305 f229 d345 00ee e000 8000
+fc00 aa00 0000 0000`
 
 const SCREEN_LENGTH = 32
 const SCREEN_HEIGHT = 64
+
+const PC_START = 0x200
 
 class Logger { // yeah.... I SHOULD just use a good one.
 	constructor(levels = ["debug", "message", "warning", "error"], preamble = () => {}) { // Preamble is a function to make it dynamic
@@ -52,6 +41,9 @@ class Logger { // yeah.... I SHOULD just use a good one.
 		}
 	}
 
+	debug(message) {
+		this.log(message, "debug")
+	}
 	hush() {
 		this.hushed = true
 	}
@@ -161,7 +153,7 @@ class CPU {
 	constructor(display) {
 		this.display = new Display()
 		this.stack = new Stack()
-		this.pc = 0x200
+		this.pc = PC_START
 		this.i_register = 0
 		this.v_registers = new VRegisters()
 		this.logger = new Logger()
@@ -169,7 +161,7 @@ class CPU {
 
 		console.log(typeof(logger))
 		logger.setPreambleCallback(() => {
-			return `[PC=${this.pc};Opcode=${this.fetch().toString(16)}] `
+			return `[PC=0x${this.pc.toString(16)};Opcode=${this.fetch().toString(16)}] `
 		})
 	}
 
@@ -194,8 +186,8 @@ class CPU {
 
 	fetch() {
 		//code is supposed to be loaded into 0x0200
-		const loc = this.pc - 0x200
-		return (parseInt(this.rom[loc], 16) << 8) + (parseInt(this.rom[loc+1, 16]));
+		const loc = this.pc - PC_START
+		return (parseInt(this.rom[loc], 16) << 8) + (parseInt(this.rom[loc+1], 16));
 	}
 
 	get_sprite(start_location, number_of_bytes) {
@@ -220,38 +212,45 @@ class CPU {
 				}
 				break;
 			case 0x1:
-				logger.log(`Jumping to ${rest.toString(16)}`)
+				logger.debug(`Jumping to ${rest.toString(16)}`)
 				this.pc = rest
 				break
 			case 0x2:
-				logger.log(`Setting PC=${this.pc} to ${rest.toString(16)}.`)
+				logger.debug(`Setting PC=${this.pc.toString(16)} to ${rest.toString(16)}.`)
 				this.stack.push(this.pc)
 				this.pc = rest
 				break;
 			case 0x3:
-				logger.log(`${this.v_registers.get(low_nibble_of_higher_byte)} == ${low_byte}? -> pc += 2`)
+				logger.debug(`${this.v_registers.get(low_nibble_of_higher_byte)} == ${low_byte}? -> pc += 2`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_compare = low_byte
 
 				if (this.v_registers.get(v_reg_idx) == value_to_compare) this.pc += 2
 
 				break;
+			case 0x4:
+				v_reg_idx = low_nibble_of_higher_byte
+				let value_to_check = low_byte
+
+				logger.debug(`Checking if ${this.v_registers.get(v_reg_idx)} != ${value_to_check}`)
+				if (this.v_registers.get(v_reg_idx) != v_reg_idx) this.pc +=2
+				break;
 			case 0x6:
-				logger.log(`Setting register ${low_nibble_of_higher_byte} to ${low_byte}.`)
+				logger.debug(`Setting register ${low_nibble_of_higher_byte} to ${low_byte}.`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_set = low_byte
 
 				this.v_registers.set(v_reg_idx, value_to_set)
 				break;
 			case 0x7:
-				logger.log(`Adding value ${low_byte} to register ${low_nibble_of_higher_byte}`)
+				logger.debug(`Adding value ${low_byte} to register ${low_nibble_of_higher_byte}`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_add = low_byte
 
 				this.v_registers.add(v_reg_idx, value_to_add)
 				break;
 			case 0xa:
-				logger.log(`Setting i register to ${rest}`)
+				logger.debug(`Setting i register to ${rest.toString(16)}`)
 				this.setIRegister(rest)
 				break;
 			case 0xd:
@@ -261,7 +260,7 @@ class CPU {
 				const sprite_height = (low_byte & 0x0F) // number of bytes to retrieve
 				const next_x = this.v_registers.get(vx_idx)
 				const next_y = this.v_registers.get(vy_idx)
-				logger.log(`Drawing sprite of height ${sprite_height} from loc: ${start_location} to (${next_x}, ${next_y}).`)
+				logger.debug(`Drawing sprite of height ${sprite_height} from loc: ${start_location.toString(16)} to (${next_x}, ${next_y}).`)
 
 				const sprite = this.get_sprite(start_location, sprite_height)
 				this.display.add_sprite(next_x, next_y, sprite)
@@ -287,6 +286,6 @@ const cpu = new CPU()
 cpu.load();
 cpu.print();
 
-for (var i = 0; i <= 100000; i++) {
+for (var i = 0; i <= 100; i++) {
 	cpu.tick()
 }
