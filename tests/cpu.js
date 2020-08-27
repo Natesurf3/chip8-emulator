@@ -33,6 +33,38 @@ f265 a2b4 00ee 6a00 6019 00ee 3723`
 const SCREEN_LENGTH = 32
 const SCREEN_HEIGHT = 64
 
+class Logger { // yeah.... I SHOULD just use a good one.
+	constructor(levels = ["debug", "message", "warning", "error"], preamble = () => {}) { // Preamble is a function to make it dynamic
+		this.levels = levels
+		this.messageLog = []
+		this.min_level_idx = 0
+		this.hushed = false
+		this.preamble = preamble
+	}
+
+	log(message, level="message") {
+		var level_idx = this.levels.indexOf(level)
+
+		if (level_idx === -1) console.error("Bad level given to logger.")
+
+		if ((level_idx >= this.min_level_idx) & !this.hushed) {
+			console.log(`${this.preamble()}${message}`)
+		}
+	}
+
+	hush() {
+		this.hushed = true
+	}
+
+	unhush() {
+		this.hushed = false
+	}
+
+	setPreambleCallback(cb) {
+		this.preamble = cb
+	}
+}
+
 class Display {
 	constructor() {
 		this.pixels = new Array(SCREEN_LENGTH*SCREEN_HEIGHT).fill(0);
@@ -44,10 +76,12 @@ class Display {
 
 	add_sprite_Row(x, y, byte) {
 		var start_loc_in_buffer = y * 32 + x
+		const start_row_loc_in_buffer = y*32
+
 		const wrap_at = 32 - x
 
 		for (var i = 0; i++; i < 8) {
-			const bit_loc = start_loc_in_buffer + i % SCREEN_LENGTH
+			const bit_loc = start_row_loc_in_buffer + ((x+i) % SCREEN_LENGTH) // modulo for wrap-around effect
 			const pixel_in_sprite = (byte & (1 << (8 - i)))
 			const next_pixel = this.pixels[bit_loc] ^ pixel_in_sprite
 
@@ -60,6 +94,8 @@ class Display {
 		}
 	}
 }
+
+const logger = new Logger()
 
 class Stack {
 	constructor() {
@@ -79,6 +115,7 @@ class Stack {
 		return out
 	}
 }
+
 class VRegister {
 	constructor() {
 		this.value = 0
@@ -127,6 +164,13 @@ class CPU {
 		this.pc = 0x200
 		this.i_register = 0
 		this.v_registers = new VRegisters()
+		this.logger = new Logger()
+		this.rom = []
+
+		console.log(typeof(logger))
+		logger.setPreambleCallback(() => {
+			return `[PC=${this.pc};Opcode=${this.fetch().toString(16)}] `
+		})
 	}
 
 	load() {
@@ -141,7 +185,7 @@ class CPU {
 	}
 
 	print() {
-		console.log(`ROM: ${this.rom.length}: ${this.rom}`)
+		logger.log(`ROM: ${this.rom.length}: ${this.rom}`)
 	}
 
 	setIRegister(val) {
@@ -167,7 +211,7 @@ class CPU {
 		let v_reg_idx = null // Seems bad, but I can't define it multiple times in the switch.
 
 		switch (family) {
-			case 0: // display clear/
+			case 0x0: // display clear/
 				if (rest != 0x0EE) {
 					this.display.clear()
 				}
@@ -175,13 +219,17 @@ class CPU {
 					this.pc = this.stack.pop()
 				}
 				break;
-			case 2:
-				console.log(`${instruction.toString(16)}: Setting PC=${this.pc} to ${rest.toString(16)}.`)
+			case 0x1:
+				logger.log(`Jumping to ${rest.toString(16)}`)
+				this.pc = rest
+				break
+			case 0x2:
+				logger.log(`Setting PC=${this.pc} to ${rest.toString(16)}.`)
 				this.stack.push(this.pc)
 				this.pc = rest
 				break;
-			case 3:
-				console.log(`${instruction.toString(16)}: ${this.v_registers.get(low_nibble_of_higher_byte)} == ${low_byte}? -> pc += 2`)
+			case 0x3:
+				logger.log(`${this.v_registers.get(low_nibble_of_higher_byte)} == ${low_byte}? -> pc += 2`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_compare = low_byte
 
@@ -189,21 +237,21 @@ class CPU {
 
 				break;
 			case 0x6:
-				console.log(`${instruction.toString(16)}: Setting register ${low_nibble_of_higher_byte} to ${low_byte}.`)
+				logger.log(`Setting register ${low_nibble_of_higher_byte} to ${low_byte}.`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_set = low_byte
 
 				this.v_registers.set(v_reg_idx, value_to_set)
 				break;
 			case 0x7:
-				console.log(`${instruction.toString(16)}: Adding value ${low_byte} to register ${low_nibble_of_higher_byte}`)
+				logger.log(`Adding value ${low_byte} to register ${low_nibble_of_higher_byte}`)
 				v_reg_idx = low_nibble_of_higher_byte
 				const value_to_add = low_byte
 
 				this.v_registers.add(v_reg_idx, value_to_add)
 				break;
 			case 0xa:
-				console.log(`${instruction.toString(16)}: Setting i register to ${rest}`)
+				logger.log(`Setting i register to ${rest}`)
 				this.setIRegister(rest)
 				break;
 			case 0xd:
@@ -213,7 +261,7 @@ class CPU {
 				const sprite_height = (low_byte & 0x0F) // number of bytes to retrieve
 				const next_x = this.v_registers.get(vx_idx)
 				const next_y = this.v_registers.get(vy_idx)
-				console.log(`Drawing sprite of height ${sprite_height} from loc: ${start_location} to (${next_x}, ${next_y}).`)
+				logger.log(`Drawing sprite of height ${sprite_height} from loc: ${start_location} to (${next_x}, ${next_y}).`)
 
 				const sprite = this.get_sprite(start_location, sprite_height)
 				this.display.add_sprite(next_x, next_y, sprite)
@@ -239,6 +287,6 @@ const cpu = new CPU()
 cpu.load();
 cpu.print();
 
-for (var i = 0; i <= 10; i++) {
+for (var i = 0; i <= 100000; i++) {
 	cpu.tick()
 }
