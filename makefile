@@ -1,9 +1,11 @@
 run: all
 	@./bin/main
 
-all: ./src/main.cpp
-	@mkdir -p ./bin
+all: ./bin ./src/main.cpp
 	@g++ -o ./bin/main ./src/main.cpp
+
+bin:
+	@mkdir -p ./bin
 
 clean:
 	@rm -r ./bin
