@@ -121,4 +121,4 @@ r.pc = x # jump to subroutine
 >r.st -= 1 # move down stack
 r.pc = r.stack[r.st] # recall previous location
 
-a program could theoretically call subroutine 16 times in a row. after that behavior is undefined
+a program could theoretically call subroutine 16 times in a row. depth greater than 16 is undefined
