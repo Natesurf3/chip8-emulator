@@ -9,9 +9,9 @@ every line represents a pattern or a parser command
 each pattern represents how to extract arguments  
 
 in terms of opcode:  
-  starts at 1  
-  increments each line  
-  can be modified using commands  
+  * starts at 1  
+  * increments each line  
+  * can be modified using commands  
 
 this gets us [opcode, arg1, arg2, arg3]  
 
@@ -19,23 +19,23 @@ this gets us [opcode, arg1, arg2, arg3]
 patterns are 4 characters long. each character represents a nibble (4 bits) (1 hex character)  
 
 0-F: constant  
-  these bits never change.  
+ * these bits never change.  
 x,y,z: arg1, arg2, arg3:  
-  these bits are variable.  
+ * these bits are variable.  
 
 x, y, and z can occur multiple times in a row, with no other characters in between.  
 The bits are combined big-endian.
 
 #### commands:  
 skip: special pattern which matches nothing  
-setop <number>: sets the opcode counter.  
+setop <number>: sets the opcode counter.    
  * format: + or - followed by 0-9.  
 
 
 #### Stuff that is ignored:  
-  characters after #  
-  space (' ')  
-  empty lines (such as those where every character is ignored)  
+ * characters after #  
+ * space (' ')  
+ * empty lines (such as those where every character is ignored)  
 
 
 
@@ -58,5 +58,5 @@ setop <number>: sets the opcode counter.
       arg3: -23484750148  <-- undefined  
 
 
-TLDR: from a 32-bit instruction and a .hpt file you can calculate:  
+TLDR: from a 32-bit instruction and a .hpt file you can calculate:
 int[4] = {opcode, arg1, arg2, arg3}  
