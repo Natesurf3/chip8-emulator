@@ -20,10 +20,11 @@ patterns are 4 characters long. each character represents a nibble (4 bits) (1 h
 
 0-F: constant  
  * these bits never change.  
+
 x,y,z: arg1, arg2, arg3:  
  * these bits are variable.  
 
-x, y, and z can occur multiple times in a row, with no other characters in between.  
+x, y, and z can occur multiple times in a row when there are no other characters in between.  
 The bits are combined big-endian.
 
 #### commands:  
