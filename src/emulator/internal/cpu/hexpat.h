@@ -8,12 +8,12 @@
 #include <vector>
 #include <string>
 
-namespace instruction_set {
+namespace hexpat {
   bool is_hex_digit(char c) {
-    return (ch >= '0' && ch <= '9') ||
-        (ch >= 'A' && ch <= 'F');
+    return (c >= '0' && c <= '9') ||
+        (c >= 'A' && c <= 'F');
   }
-  unsized int hex_to_uint(char c) {
+  unsigned int hex_to_uint(char c) {
     if(c >= '0' && c <= '9')
       return c-'0';
     else if(c >= 'A' && c <= 'F')
@@ -25,8 +25,8 @@ namespace instruction_set {
   bool is_arg_digit(char c) {
     return c >= 'x' && c <= 'z';
   }
-  unsized int arg_to_uint(char c) {
-    if(is_arg_digit)
+  unsigned int arg_to_uint(char c) {
+    if(is_arg_digit(c))
       return c-'x';
     else
       assert(false);
@@ -49,14 +49,14 @@ namespace instruction_set {
     int arg_sh[3] = {0,0,0};
 
     int opcode;
-    string str_rep;
+    std::string str_rep;
 
   public:
     Pattern(std::string str_rep, int opcode) {
-      this.str_rep = str_rep;
-      this.opcode = opcode;
+      this->str_rep = str_rep;
+      this->opcode = opcode;
 
-      assert(str_rep.length == 4);
+      assert(str_rep.length() == 4);
 
 
       for(int i = 0; i < 4; i++) {
@@ -64,19 +64,20 @@ namespace instruction_set {
 
         if(is_hex_digit(ch)) {
           // exact binary match required for hex bits
-          eq_bits |= hex_to_uint(ch) << i*8;
+          eq_bits |= (hex_to_uint(ch) << i*8);
         }
         else if(is_arg_digit(ch)){
-          or_bits |= 0xF << i*8; // variable (argument) bits
-          eq_bits |= 0xF << i*8; // are set to 1 (making them ignorable)
+          or_bits |= (0xF << i*8); // variable (argument) bits
+          eq_bits |= (0xF << i*8); // are set to 1, making them ignorable
 
           // store location of variable bits in array
           // so they can be extracted into argument list
-          argn = arg_to_uint(ch);
+          int argn = arg_to_uint(ch);
           arg_bits[argn] |= (0xF<<i*8);
           if(!arg_exists[argn]) {
-            arg_sh[argn] = i*8;
             arg_exists[argn] = true;
+            arg_sh[argn] = i*8;
+
           }
         }
       }
@@ -86,10 +87,10 @@ namespace instruction_set {
       int ret[4] = [opcode, arg1, arg2, arg3]
     */
     bool try_match(int *ret, uint16_t instr) {
-      bool is_match = (instr|or_bits) == xor_bits;
+      bool is_match = (instr|or_bits) == eq_bits;
 
       if(is_match) {
-        ret[0] = this.opcode;
+        ret[0] = opcode;
         for(int i = 0; i < 3; i++) {
             ret[i+1] = ((instr&arg_bits[i]) >> arg_sh[i]);
         }
@@ -101,11 +102,11 @@ namespace instruction_set {
 
 
   class InstructionSet {
-    vector<Pattern> patterns;
+    std::vector<Pattern> patterns;
 
   public:
-    Patternset() {
-      load_from_file("./chip8.hpt")
+    InstructionSet() {
+      load_from_file("./src/emulator/internal/cpu/chip8.hpt");
     }
 
     bool try_match(int *ret, uint16_t instr) {
@@ -119,16 +120,16 @@ namespace instruction_set {
 
 
     /* parses hpt file format */
-    void load_from_file(string fname) {
-      ifstream f(fnames[i]);
-      string line;
+    void load_from_file(std::string fname) {
+      std::ifstream f(fname);
+      std::string line;
 
-      int op = 1;
+      int op = -999; //TODO: debug
       while(std::getline(f, line)) {
-        string not_ignored = "";
+        std::string not_ignored = "";
 
         bool is_comment = false;
-        for(int i = 0; i < line.length; i++) {
+        for(int i = 0; i < line.length(); i++) {
           char c = line[i];
 
           if(c == ' ')
@@ -139,13 +140,14 @@ namespace instruction_set {
             not_ignored += c;
         }
 
+        std::cout << op << " " << not_ignored << std::endl;
         if(not_ignored == "")
           continue;
         else if(not_ignored.find("setop") == 0)
-          op = std::stoi(not_ignored.substr(5, string::npos));
+          op = std::stoi(not_ignored.substr(5, std::string::npos));
         else if(not_ignored.find("skip") == 0)
           op++;
-        else if(not_ignored.length == 4){
+        else if(not_ignored.length() == 4){
           patterns.push_back(Pattern(not_ignored, op));
           op++;
         }

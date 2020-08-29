@@ -4,6 +4,10 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <cstdint>
+
+#include "./internal/cpu/hexpat.h"
+using namespace hexpat;
 
 namespace emulator {
   using namespace std::chrono;
@@ -13,6 +17,26 @@ namespace emulator {
   using seconds = duration<double>;
 
   class Emulator {
+    InstructionSet instr_set = InstructionSet();
+
+    uint16_t fake_rom[16] = {
+      0x22EF,
+      0xBFBD,
+      0x6B0C,
+      0x6C3F,
+      0x6D0C,
+      0xEFBF,
+      0xBDEF,
+      0xBFBD,
+      0xDAB6,
+      0xEFBF,
+      0xBDEF,
+      0xBFBD,
+      0x6E00,
+      0x22EF,
+      0xBFBD,
+      0x6603,
+    };
 
   public:
     Emulator() {
@@ -31,7 +55,16 @@ namespace emulator {
         std::cout << "Start Tick " << tick_iter << std::endl;
 
         //---------- emulator tick internal --------------
-        //do stuff
+        uint16_t instruction = fake_rom[tick_iter%16];
+        int ret[4];
+        bool match = instr_set.try_match(ret, instruction);
+
+        std::cout << "\t[";
+        for(int i = 0; i < 4; i++)
+          std::cout << ret[i] << ",";
+        std::cout << "] " << match << std::endl;
+
+
         //------------------- end ------------------------
 
         tick_time += tick_duration;
