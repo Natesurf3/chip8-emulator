@@ -32,6 +32,17 @@ namespace hexpat {
       assert(false);
   }
 
+  std::string u16_to_binary(uint16_t n) {
+    std::string out = "";
+    for(int i = 0; i < 16; i++) {
+        char digit = ('0'+n%2);
+        n = n/2;
+        out = digit + out;
+    }
+    return out;
+  }
+
+
 
   /*
     binary pattern matching algorithm:
@@ -60,27 +71,29 @@ namespace hexpat {
 
 
       for(int i = 0; i < 4; i++) {
-        char ch = str_rep[i];
+        char ch = str_rep[3-i];
 
         if(is_hex_digit(ch)) {
           // exact binary match required for hex bits
-          eq_bits |= (hex_to_uint(ch) << i*8);
+          eq_bits |= (hex_to_uint(ch) << i*4);
         }
         else if(is_arg_digit(ch)){
-          or_bits |= (0xF << i*8); // variable (argument) bits
-          eq_bits |= (0xF << i*8); // are set to 1, making them ignorable
+          or_bits |= (0xF << i*4); // variable (argument) bits
+          eq_bits |= (0xF << i*4); // are set to 1, making them ignorable
 
           // store location of variable bits in array
           // so they can be extracted into argument list
           int argn = arg_to_uint(ch);
-          arg_bits[argn] |= (0xF<<i*8);
+          arg_bits[argn] |= (0xF<<i*4);
           if(!arg_exists[argn]) {
             arg_exists[argn] = true;
-            arg_sh[argn] = i*8;
-
+            arg_sh[argn] = i*4;
           }
         }
       }
+
+      std::cout << u16_to_binary(or_bits) << std::endl;
+      std::cout << u16_to_binary(eq_bits) << std::endl;
     }
 
     /*
