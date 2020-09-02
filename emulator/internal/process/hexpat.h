@@ -119,7 +119,7 @@ namespace hexpat {
 
   public:
     InstructionSet() {
-      load_from_file("./src/emulator/internal/cpu/chip8.hpt");
+      load_from_file("./process/chip8.hpt");
     }
 
     bool try_match(int *ret, uint16_t instr) {

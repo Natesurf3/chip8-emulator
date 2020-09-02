@@ -22,9 +22,15 @@
  8: 5xy0 -- skip if r[x] == r[y]
 20: 9xy0 -- skip if r[x] != r[y]
 ##### keys
-25: Ex9E -- skip if keys[r[x]] == pressed
-26: ExA1 -- skip if keys[r[x]] != pressed
-28: Fx0A -- wait for key press, r[x] = key_id
+25: Ex9E -- skip if keys.curr[r[x]] == pressed
+26: ExA1 -- skip if keys.curr[r[x]] != pressed
+28: Fx0A -- wait for keypress, r[x] = key_id;
+ * implementation:
+  for some id, if(keys.curr[id] > keys.last[id]){r[x] = key_id} else pc--; (infinite loop)
+ * on second note there are a 2 ways 'wait for key press' could be interpereted
+    1) wait for a _new_ key press
+    2) accept any key press even if it was already pressed
+ * im going with the first one but will beware
 
 #### Primary registers (r[x])
 ##### set
@@ -46,7 +52,7 @@
 ##### sub
 16: 8xy5 -- set r[x] = r[x]-r[y]
 18: 8xy7 -- set r[x] = r[y]-r[x]
- * 16/18: r[F] = 0 when there's a borrow else 1. need definition for detecting 'a borrow'
+ * 16/18: r[F] = 0 when there's a borrow else 1. borrow means the result would be negative
 
 ##### shift
 17: 8xy6 -- shift right = /2 = >>;  r[F] = lost_bit;
@@ -55,16 +61,20 @@
     * chip8 = shift y and store in x
     * schip and chip-48 = shift x and store in x; ignore y
 ##### timer
-27: Fx07 -- r[x] = r.dt
-29: Fx15 -- r.dt = r[x]
-30: Fx18 -- r.st = r[x]
+27: Fx07 -- r[x] = r.dtm
+29: Fx15 -- r.dtm = r[x]
+30: Fx18 -- r.stm = r[x]
 
 
 #### Ram
 ##### index pointer
 21: Axxx -- set r.i = x
 31: Fx1E -- r.i = r.i+r[x]
-32: Fx29 -- r.i = default_font.sprite_address[x]
+32: Fx29 -- r.i = ram.font_sprite_addrs[x]
+ * differences for Fx1E  
+    * every interpereter ever: doesnt affect r[F]
+    * Commodore Amiga chip8 interpereter: r[F] = is_overflow
+    * only known use: Spaceflight 2091! for chip8
 
 ##### copy registers
 34: Fx55 -- ram[r.i:r.i+x] = r[0:x]

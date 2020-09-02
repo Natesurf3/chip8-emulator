@@ -6,7 +6,7 @@
 #include <thread>
 #include <cstdint>
 
-#include "./internal/cpu/hexpat.h"
+#include "./process/hexpat.h"
 using namespace hexpat;
 
 namespace emulator {
@@ -61,7 +61,6 @@ namespace emulator {
 
 
         //------------------- end ------------------------
-
         tick_time += tick_duration;
         std::this_thread::sleep_until(tick_time);
         tick_n++;

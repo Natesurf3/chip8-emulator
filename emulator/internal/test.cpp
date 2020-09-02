@@ -24,7 +24,7 @@ int main() {
 
 //  bit keys.curr[16]
 //  bit keys.last[16]
-#include "./emulator/internal/data/chip8_data.h"
+#include "./data/chip8_data.h"
 void test_data_types() {
   Chip8Data data;
 
