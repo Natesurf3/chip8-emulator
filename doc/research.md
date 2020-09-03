@@ -70,7 +70,8 @@
 ##### index pointer
 21: Axxx -- set r.i = x  
 31: Fx1E -- r.i = r.i+r[x]  
-32: Fx29 -- r.i = ram.font_sprite_addrs[x]  
+32: Fx29 -- r.i = ram.font_sprite_addrs[r[x]]  
+ * font was 4x5 (left half of 8x5)
  * differences for Fx1E  
     * every interpereter ever: doesnt affect r[F]
     * Commodore Amiga chip8 interpereter: r[F] = is_overflow
