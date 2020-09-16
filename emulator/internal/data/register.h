@@ -28,7 +28,7 @@ public:
   uint8_t dtm = 0;
   uint8_t stm = 0;
   uint16_t i = 0;
-  uint16_t pc = 200;
+  uint16_t pc = 0x200;
   uint16_t stack[16] = {};
 
   uint8_t& operator[](std::size_t ix) { return __arr[ix]; }
@@ -52,7 +52,7 @@ public:
       }
     }
 
-    pc = pc+1;
+    pc = (pc+2)%0x1000;
 
   }
 
