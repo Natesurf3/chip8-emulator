@@ -37,6 +37,15 @@
  9: 6xyy -- set r[x] = y  
 11: 8xy0 -- set r[x] = r[y]  
 
+##### add
+10: 7xyy -- set r[x] = r[x]+y, no flag change  
+15: 8xy4 -- set r[x] = r[x]+r[y], set r[F] = is_overflow  
+
+##### sub
+16: 8xy5 -- set r[x] = r[x]-r[y], set r[F] = is_not_borrow
+18: 8xy7 -- set r[x] = r[y]-r[x], set r[F] = is_not_borrow
+ * 16/18: borrow means the result would be negative
+
 ##### rand
 23: Cxyy -- set r[x] = y & rand  
 
@@ -44,15 +53,6 @@
 12: 8xy1 -- set r[x] = r[x]|r[y]  
 13: 8xy2 -- set r[x] = r[x]&r[y]  
 14: 8xy3 -- set r[x] = r[x]^r[y]  
-
-##### add
-10: 7xyy -- set r[x] = r[x]+y, no flag change  
-15: 8xy4 -- set r[x] = r[x]+r[y], set r[F] = is_overflow  
-
-##### sub
-16: 8xy5 -- set r[x] = r[x]-r[y]  
-18: 8xy7 -- set r[x] = r[y]-r[x]  
- * 16/18: r[F] = 0 when there's a borrow else 1. borrow means the result would be negative
 
 ##### shift
 17: 8xy6 -- shift right = /2 = >>;  r[F] = lost_bit;  
@@ -80,7 +80,7 @@
 ##### copy registers
 34: Fx55 -- ram[r.i:r.i+x] = r[0:x]  
 35: Fx65 -- r[0:x] = ram[r.i:r.i+x]  
- * differences
+ * differences (34, 35)
     * chip8 and chip-48 = r.i += x (x-1? x+1?)
     * schip = r.i is unmodified
 

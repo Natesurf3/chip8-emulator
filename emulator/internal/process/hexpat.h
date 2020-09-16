@@ -8,41 +8,18 @@
 #include <vector>
 #include <string>
 
-namespace hexpat {
-  bool is_hex_digit(char c) {
-    return (c >= '0' && c <= '9') ||
-        (c >= 'A' && c <= 'F');
-  }
-  unsigned int hex_to_uint(char c) {
-    if(c >= '0' && c <= '9')
-      return c-'0';
-    else if(c >= 'A' && c <= 'F')
-      return c-'A' + 10;
-    else
-      assert(false);
-  }
+#include "../util/text.h"
+using namespace text;
 
+namespace hexpat {
   bool is_arg_digit(char c) {
     return c >= 'x' && c <= 'z';
   }
+
   unsigned int arg_to_uint(char c) {
-    if(is_arg_digit(c))
-      return c-'x';
-    else
-      assert(false);
+    if(is_arg_digit(c)) return c-'x';
+    else assert(false);
   }
-
-  std::string u16_to_binary(uint16_t n) {
-    std::string out = "";
-    for(int i = 0; i < 16; i++) {
-        char digit = ('0'+n%2);
-        n = n/2;
-        out = digit + out;
-    }
-    return out;
-  }
-
-
 
   /*
     binary pattern matching algorithm:
@@ -64,11 +41,9 @@ namespace hexpat {
 
   public:
     Pattern(std::string str_rep, int opcode) {
+      assert(str_rep.length() == 4);
       this->str_rep = str_rep;
       this->opcode = opcode;
-
-      assert(str_rep.length() == 4);
-
 
       for(int i = 0; i < 4; i++) {
         char ch = str_rep[3-i];
@@ -114,20 +89,18 @@ namespace hexpat {
   };
 
 
-  class InstructionSet {
+  class HexList {
     std::vector<Pattern> patterns;
 
   public:
-    InstructionSet() {
+    HexList() {
       load_from_file("./process/chip8.hpt");
     }
 
     bool try_match(int *ret, uint16_t instr) {
-      for(int i = 0; i < patterns.size(); i++) {
-        if(patterns[i].try_match(ret, instr)) {
+      for(int i = 0; i < patterns.size(); i++)
+        if(patterns[i].try_match(ret, instr))
           return true;
-        }
-      }
       return false;
     }
 
@@ -139,19 +112,7 @@ namespace hexpat {
 
       int op = -999; //TODO: debug
       while(std::getline(f, line)) {
-        std::string not_ignored = "";
-
-        bool is_comment = false;
-        for(int i = 0; i < line.length(); i++) {
-          char c = line[i];
-
-          if(c == ' ')
-            continue;
-          else if(c == '#')
-            is_comment = true;
-          else if(!is_comment)
-            not_ignored += c;
-        }
+        std::string not_ignored = clean_str(line);
 
         std::cout << op << " " << not_ignored << std::endl;
         if(not_ignored == "")
