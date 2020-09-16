@@ -1,7 +1,7 @@
 BIN = ../../bin
 
 clean:
-	@rm -r ${BIN}
+	@rm -rf ${BIN}
 
 run: main
 
@@ -9,14 +9,14 @@ ${BIN}:
 	@mkdir -p ${BIN}
 
 # ---- main ----
-main: ${BIN} ${BIN}/main
+main: clean ${BIN} ${BIN}/main
 	@${BIN}/main
 
 ${BIN}/main: ./main.cpp
 	@g++ -o ${BIN}/main ./main.cpp
 
 # ---- test ----
-test: ${BIN} ${BIN}/test
+test: clean ${BIN} ${BIN}/test
 	@${BIN}/test
 
 ${BIN}/test: ./test.cpp

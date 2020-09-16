@@ -5,69 +5,86 @@
 #include <chrono>
 #include <thread>
 #include <cstdint>
+#include <string>
+#include <cassert>
+
+#include "../external/console_header/ext_display.h"
+
+#include "./process/chip8.h"
 
 #include "./process/hexpat.h"
+#include "./util/logger.h"
+#include "./util/text.h"
 using namespace hexpat;
+using namespace logger;
+using namespace text;
 
 namespace emulator {
   using namespace std::chrono;
-
   using clock = steady_clock;
   using time = steady_clock::time_point;
   using seconds = duration<double>;
 
   class Emulator {
-    InstructionSet instr_set = InstructionSet();
-
-    uint16_t fake_rom[16] = {
-      0x22EF, 0xBFBD,
-      0x6B0C, 0x6C3F,
-
-      0x6D0C, 0xEFBF,
-      0xBDEF, 0xBFBD,
-
-      0xDAB6, 0xEFBF,
-      0xBDEF, 0xBFBD,
-
-      0x6E00, 0x22EF,
-      0xBFBD, 0x6603,
-    };
-
   public:
-    Emulator() {
-    }
+    Emulator() {}
 
     void run() {
-      std::cout << "Start of Emulator" << std::endl;
+      log("Start of Emulator");
+      Chip8Data data;
+      HexList instr;
+      ExtDisplay disp;
+
+      assert(data.ram.load_rom("../resources/test_rom.txt"));
+
+      double dt = 1.0/40.0;
+      clock::duration tick_duration =
+          duration_cast<clock::duration>(seconds(dt));
       time start = clock::now();
+      time last_tick = start;
 
-      time tick_time = start;
-      clock::duration tick_duration = \
-          duration_cast<clock::duration>(seconds(1.0/100.0));
-
-      int tick_n = 0;
-      while(true) {
-        std::cout << "Start Tick " << tick_n << std::endl;
+      for(int tick_n = 0; tick_n <=2000; tick_n++) {
+        log("tick: ", tick_n);
 
         //---------- emulator tick internal --------------
-        uint16_t instruction = fake_rom[tick_n%16];
-        int ret[4];
-        bool match = instr_set.try_match(ret, instruction);
+        uint16_t hex = data.ram.get_instr(data.r.pc);
+        int cmnd[4];
+        bool match = instr.try_match(cmnd, hex);
+        if(true){
+          std::cout << "\tpc_ln: " << (data.r.pc/2-255) << std::endl;
+          std::cout << "\thex: " << u16_to_hex(hex) << std::endl;
+          std::cout << "\t{r.i, r.dtm, r.stm}: {"
+                    << (int)data.r.i << ", "
+                    << (int)data.r.dtm << ", "
+                    << (int)data.r.stm
+                    << "}" << std::endl;
 
-        std::cout << "\t[";
-        for(int i = 0; i < 4; i++)
-          std::cout << ret[i] << ",";
-        std::cout << "] " << match << std::endl;
-
-
-        //------------------- end ------------------------
-        tick_time += tick_duration;
-        std::this_thread::sleep_until(tick_time);
-        tick_n++;
-
-        if(tick_n == 32) {
-          break;
+          std::cout << "\tcmnd: {";
+          for(size_t i = 0; i < 4; i ++) {
+            std::cout << cmnd[i];
+            if(i != 3) std::cout << ", ";
+          }
+          std::cout << "}" << std::endl;
+          std::cout << "\treg: {";
+          for(size_t i = 0; i < 16; i ++) {
+            std::cout << std::to_string((int)data.r[i]);
+            if(i != 15) std::cout << ", ";
+          }
+          std::cout << "}" << std::endl;
         }
+
+        if(match) process(cmnd, data);
+        else std::cout << "\tinstruction not processable" << std::endl;
+
+
+
+        data.tick(dt);
+
+        disp.update(data);
+        disp.communicate();
+        //------------------- end ------------------------
+        last_tick += tick_duration;
+        std::this_thread::sleep_until(last_tick);
       }
 
       time stop = clock::now();
