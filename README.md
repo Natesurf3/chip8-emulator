@@ -37,5 +37,5 @@ resources: This folder mostly holds ROM and ROM-related stuff
 ## file types:
 .hpt: describes any instruction set  
 .cha: chip8 assembly  
-.hex: chip8 machine code as hexadecimal text *(ROM format)*  
-.ch8: chip8 machine code _raw_  
+.hex: chip8 machine code as hexadecimal text **(ROM format)**  
+.ch8: chip8 machine code raw  
