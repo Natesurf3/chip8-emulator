@@ -31,7 +31,7 @@ namespace emulator {
       ExtDisplay disp;
       TPSTimer tps = TPSTimer(1.0/40.0);
 
-      assert(data.ram.load_rom("../resources/custom_rom/test_rom.txt"));
+      assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
 
       for(int tick_n = 0; tick_n <=2000; tick_n++) {
         log("tick: ", tick_n);

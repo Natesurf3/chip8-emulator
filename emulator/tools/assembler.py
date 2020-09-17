@@ -122,8 +122,8 @@ def compile(ifname, ofname):
 
 if __name__ == "__main__":
     if True:
-        compile("../resources/test_rom.cha",
-                "../resources/test_rom.txt")
+        compile("../resources/custom_rom/test_rom.cha",
+                "../resources/custom_rom/test_rom.txt")
     else:
         print(">> Welcome to HEXP COMPILE")
         print(">> ifname: ", end="")

@@ -51,6 +51,23 @@ public:
     return true;
   }
 
+  bool load_rom_binary(std::string fname) {
+    log("loading binary:" + fname);
+    std::ifstream f(fname, std::ifstream::binary);
+    char next[1];
+
+    if(!f.good() || !f.is_open()) {
+      log("COULD NOT LOAD ROM");
+      return false;
+    }
+
+    for(size_t i = 0x200; f.read(next, 1) && i<0x1000; i++) {
+      __arr[i] = (uint8_t)next[0];
+      log("load bin: " + std::to_string((int)__arr[i]) + " == " + u16_to_hex(get_instr(i)));
+    }
+    return true;
+  }
+
   uint16_t get_instr(uint16_t pc) {
     return (__arr[pc]<<8) + __arr[pc+1];
   }

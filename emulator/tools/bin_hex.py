@@ -2,8 +2,8 @@
 # formatting chip8 binary ROM in binary and hex
 # ------------------------------------------------------
 
-# bins = binary raw format
-# hex = hexadecimal text format
+# bins = binary raw format in bytes
+# hex = hexadecimal text format (in nibbles)
 
 hex_ch = [
     '0', '1', '2', '3',
@@ -27,9 +27,6 @@ def bins_to_hexs(bins):
         out += bin_to_hex(bins[i])
         if i%2 == 1:
             out += "\n"
-
-    if len(bins)%2 == 0:
-        out += "00\n" # padding
 
     return out
 
@@ -83,6 +80,13 @@ def write_bins(filename, bins):
     file = open(filename, "wb")
     file.write(bytes(bins))
     file.close()
+
+def binf_to_hexf(ifname, ofname):
+    write_hexs(ofname, bins_to_hexs(read_bins(ifname)))
+
+def hexf_to_binf(ifname, ofname):
+    write_bins(ofname, hexs_to_bins(read_hexs(ifname)))
+
 # ------------------------------------------------------
 # ---------------------| TEST |-------------------------
 # ------------------------------------------------------
@@ -99,10 +103,10 @@ def test_convert(fname):
     fname_2 = "./temp/"+fname+"_2"
 
     bins = read_bins(fname)
-    write_hexs(fname_1, (bins_to_hexs(bins)))
+    binf_to_hexf(fname, fname_1)
 
     hex = read_hexs(fname_1)
-    write_bins(fname_2, hexs_to_bins(hex))
+    hexf_to_binf(fname_1, fname_2)
 
     print("-----------bins0-----------")
     print(bins)
@@ -112,6 +116,12 @@ def test_convert(fname):
 # ------------------------------------------------------
 # ---------------------| MAIN |-------------------------
 # ------------------------------------------------------
+def prompt(st, end="\n"):
+    end_ = end
+    del end
+    print(st, end=end_)
+    return input()
+
 if __name__ == "__main__":
     print(">> Welcome to hex-hex repl")
 
@@ -121,20 +131,14 @@ if __name__ == "__main__":
         if cmnd == "quit":
             break;
 
-        print(">> ifname: ", end="")
-        ifname = input()
 
-        print(">> valid iftypes are ['hex', 'bins']: ", end="")
-        iftype = input()
-
-        print(">> ofname: ", end="")
-        ofname = input()
+        ifname = prompt(">> ifname: ", end="")
+        iftype = prompt(">> valid iftypes are ['hex', 'bins']: ", end="")
+        ofname = prompt(">> ofname: ", end="")
 
         if iftype == "bins":
-            bins = read_bins(ifname)
-            write_hexs(ofname, bins_to_hexs(bins))
+            binf_to_hexf(ifname, ofname)
         elif iftype == "hex":
-            hex = read_hexs(ifname)
-            write_bins(ofname, hexs_to_bins(hex))
+            hexf_to_binf(ifname, ofname)
         else:
             print(">> invalid iftype")
