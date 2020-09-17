@@ -6,6 +6,8 @@
 #include "./ram.h"
 #include "./register.h"
 
+#include "../util/logger.h"
+
 //  nibble r.st
 //  byte r[16]
 //  byte r.dtm
@@ -34,8 +36,6 @@
 //  nibble -> uint8_t,
 //  byte -> uint8_t,
 //  pointer -> uint16_t,
-//
-//  will just need to %0x1000000000000 and %0x10000
 
 
 class Chip8Data {
@@ -50,6 +50,13 @@ public:
   }
 
   Chip8Data() {};
+
+  void log() {
+    int a[3] = {r.i, r.dtm, r.stm};
+    logger::log("\tpc_ln: ", r.pc/2-255);
+    logger::log("\t{r.i, r.dtm, r.stm}: ", 3, a);
+    logger::log("\treg: ", 16, (uint8_t *)r.__arr);
+  }
 };
 
 #endif

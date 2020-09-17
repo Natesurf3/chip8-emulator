@@ -17,13 +17,13 @@ static std::random_device rd;
 //  byte r.rand()
 
 class Register {
-  double t_remainder = 0; // for timers
-  uint8_t __arr[16] = {};
+  double t_remainder = 0;
 
   std::mt19937 rng = std::mt19937(rd());
   std::uniform_int_distribution<uint8_t> rand_u8 = std::uniform_int_distribution<uint8_t>(0, 255);
 
 public:
+  uint8_t __arr[16] = {};
   uint8_t st = 0;
   uint8_t dtm = 0;
   uint8_t stm = 0;
@@ -40,7 +40,7 @@ public:
   }
 
   void tick(double dt) {
-    t_remainder += dt;
+    t_remainder += dt*60;
 
     while(t_remainder >= 1) {
       t_remainder -= 1;

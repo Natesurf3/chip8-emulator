@@ -6,9 +6,11 @@
 #include <iostream>
 #include <fstream>
 #include "./register.h"
+
 #include "../util/text.h"
+#include "../util/logger.h"
 using namespace text;
-// byte ram[4096]
+using namespace logger;
 
 class Ram {
   uint8_t __arr[4096] = {};
@@ -24,13 +26,13 @@ public:
   }
 
   bool load_rom(std::string fname) {
-    std::cout << "loading:" << fname << std::endl;
+    log("loading:" + fname);
 
     std::ifstream f(fname);
     std::string line;
 
     if(!f.good() || !f.is_open()) {
-      std::cout << "COULD NOT LOAD ROM" << std::endl;
+      log("COULD NOT LOAD ROM");
       return false;
     }
 
@@ -41,27 +43,16 @@ public:
       else if(not_ignored.length() != 4)
         assert(false);
 
-      std::cout << "load: " << not_ignored << std::endl;
       __arr[i] = hex_to_uint8(not_ignored.substr(0,2));
       __arr[i+1] = hex_to_uint8(not_ignored.substr(2,4));
 
-
-
-      std::cout << "\thex: "
-          << u8_to_hex(__arr[i]) << u8_to_hex(__arr[i+1]) << std::endl;
-
-      uint16_t hex = get_instr(i);
-      std::cout << "\thex2: "
-          << u16_to_hex(hex) << std::endl;
+      log("load: " + not_ignored + " == " + u16_to_hex(get_instr(i)));
     }
     return true;
   }
 
   uint16_t get_instr(uint16_t pc) {
-    uint16_t instr = __arr[pc];
-    instr <<= 8;
-    instr += __arr[pc+1];
-    return instr;
+    return (__arr[pc]<<8) + __arr[pc+1];
   }
 
   void load_font() {

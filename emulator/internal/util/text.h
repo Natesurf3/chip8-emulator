@@ -38,7 +38,7 @@ namespace text {
         n /= 16;
 
         if(nib < 10) out += nib+'0';
-        else out += (nib-10)+'a';
+        else out += (nib-10)+'A';
     }
     return reverse(out);
   }
@@ -60,7 +60,7 @@ namespace text {
         n /= 16;
 
         if(nib < 10) out += nib+'0';
-        else out += (nib-10)+'a';
+        else out += (nib-10)+'A';
     }
     return reverse(out);
   }
