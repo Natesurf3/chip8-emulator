@@ -51,8 +51,10 @@ void process(int *cmd, Chip8Data &data) {
 
   switch(opcode) {
     case 2:
-      for(size_t i = 0; i < 64; i++) {
-        display[i] = 0;
+      for(size_t dx = 0; dx < 64; dx++) {
+        for(size_t dy = 0; dy < 32; dy++) {
+          display.set(dx, dy, 0);
+        }
       }
     break;
     case 3:
@@ -129,25 +131,17 @@ void process(int *cmd, Chip8Data &data) {
       r[x] = y & r.rand();
     break;
     case 24: {
-      int sh1 = r[x]%32;
-      int sh2 = 32-sh1;
+      r[0xF] = 0;
+      for(size_t dy = 0; dy < z; dy++) {
+        uint8_t byte = ram[(r.i+dy)%P_MAX];
 
-      uint32_t switch_total = 0;
-      for(size_t i = 0; i < z; i++) {
-        size_t ix = (i+r[y])%64;
-
-        uint32_t byte = ((uint32_t)ram[(i+r.i)%P_MAX]) << 24;
-        uint32_t write = (byte >> sh1) | (byte << sh2);
-
-        uint32_t switch_off = (write & display[ix]);
-        uint32_t switch_on = (write & (~display[ix]));
-
-        display[ix] &= ~switch_off;
-        display[ix] |= switch_on;
-
-        switch_total |= switch_off;
+        for(size_t dx = 0; dx < 8; dx++) {
+          bool bit = (byte>>(7-dx))&0b1;
+          bool pixel = display.get(r[x]+dx, r[y]+dy);
+          r[0xF] = bit&pixel;
+          display.set(r[x]+dx, r[y]+dy, bit^pixel);
+        }
       }
-      r[0xF] = (switch_total == 0);
     }
     break;
     case 25:

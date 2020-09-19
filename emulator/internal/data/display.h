@@ -4,11 +4,15 @@
 #include <cstdint>
 
 class Display {
-  uint32_t __arr[64] = {};//top to bottom, (32x64 pixels)
+  bool __arr[32][64] = {};//[height][width]
 
 public:
-  uint32_t& operator[](std::size_t ix) { return __arr[ix]; }
-  const uint32_t& operator[](std::size_t ix) const { return __arr[ix]; }
+  bool get(size_t x, size_t y) {
+    return __arr[y][x];
+  }
+  bool set(size_t x, size_t y, bool value) {
+    return __arr[y][x] = value;
+  }
 
   Display() {}
 };

@@ -32,7 +32,7 @@ namespace emulator {
       TPSTimer tps = TPSTimer(1.0/100.0);
 
       //assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
-      assert(data.ram.load_rom_binary("../resources/curated_rom/test_rom2.ch8"));
+      assert(data.ram.load_rom_binary("../resources/curated_rom/PONG"));
 
       for(int tick_n = 0; tick_n <= 99999; tick_n++) {
         log("tick: ", tick_n);
@@ -52,6 +52,7 @@ namespace emulator {
         //------------------- end ------------------------
         disp.update(data);
         disp.communicate();
+        flush_log();
         tps.delay_tick();
       }
 

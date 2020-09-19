@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cstdint>
 #include "../../internal/data/chip8_data.h"
+#include "../../internal/util/logger.h"
 
 static const uint32_t first_bit = 1 << 31; // selector for first bit
 
@@ -16,11 +17,9 @@ public:
   void update(Chip8Data data) {
     surface = "";
 
-    for(size_t y = 0; y < 64; y++) {
-      uint32_t row = data.display[y];
-      for(uint32_t sel = first_bit; sel != 0; sel>>=1) {
-        bool bit = row&sel;
-        if(bit)
+    for(size_t y = 0; y < 32; y++) {
+      for(size_t x = 0; x < 64; x++) {
+        if(data.display.get(x, y))
           surface += "##";
         else
           surface += "  ";
@@ -30,7 +29,7 @@ public:
   }
 
   void communicate() {
-    std::cout << surface << std::endl;
+    logger::log(surface);
   }
 };
 

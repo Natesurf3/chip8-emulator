@@ -6,11 +6,19 @@
 #include <string>
 
 namespace logger {
+  static std::string buffer = "";
+
+  void flush_log() {
+    std::cout << buffer << std::flush;
+    buffer = "";
+  }
+
+
   void log(const std::string str) {
-    std::cout << str << std::endl;
+    buffer += str + "\n";
   }
   void log(const std::string str, int n) {
-    std::cout << str << n << std::endl;
+    buffer += str + "\n" + std::to_string(n);
   }
 
   void log(const std::string str, size_t len, const int *n) {
