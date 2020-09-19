@@ -18,7 +18,7 @@ namespace logger {
     buffer += str + "\n";
   }
   void log(const std::string str, int n) {
-    buffer += str + "\n" + std::to_string(n);
+    buffer += str + std::to_string(n) + "\n";
   }
 
   void log(const std::string str, size_t len, const int *n) {
