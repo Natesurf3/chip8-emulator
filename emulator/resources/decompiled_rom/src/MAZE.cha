@@ -1,0 +1,17 @@
+setIv 21E
+randv 2 1
+==v 2 1
+setIv 21A
+render 0 1 4
++v 0 4
+==v 0 40
+jump 200
+setv 0 0
++v 1 4
+==v 1 20
+jump 200
+jump 218
+set 0 4
+call 10
+call 40
+set 0 1

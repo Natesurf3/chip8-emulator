@@ -29,11 +29,12 @@ namespace emulator {
       Chip8Data data;
       HexList instr;
       ExtDisplay disp;
-      TPSTimer tps = TPSTimer(1.0/40.0);
+      TPSTimer tps = TPSTimer(1.0/100.0);
 
-      assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
+      //assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
+      assert(data.ram.load_rom_binary("../resources/curated_rom/test_rom2.ch8"));
 
-      for(int tick_n = 0; tick_n <=2000; tick_n++) {
+      for(int tick_n = 0; tick_n <= 99999; tick_n++) {
         log("tick: ", tick_n);
 
         //---------- emulator tick internal --------------

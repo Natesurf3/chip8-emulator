@@ -1,0 +1,58 @@
+setv A 0
+|main_loop|
+!==v A 20
+call {end}
+set 1 A
+set 0 A
++v A 1
+call {mult}
+call {disp_r2}
+jump {main_loop}
+
+
+|mult| /** r2 = r0*r1, r3=r1 **/
+setv 2 0
+setv 3 0
+|mult_loop|   # while r3++ != r1:
+!== 3 1
+return
++v 3 1
++ 2 0         # r2 += r0
+jump {mult_loop}
+
+
+|end| /** stop execution **/
+- 0 0         # do nothing
+jump 222      # repeat
+
+
+|disp_r2|
+/** cls and draw BCD(r2) on screen **/
+cls
+setIv 300
+digits 2
+memget 3
+setv 3 8
+setv 4 1B
+setIFont 0    # first digit
+render 3 4 5
++v 3 6
+setIFont 1    # second digit
+render 3 4 5
++v 3 6
+setIFont 2    # third digit
+render 3 4 5
+return
+
+
+|pow| /** uses r0:r4, r2 = r1**r2 **/
+/** raise number to the power of another number **/
+setv 4 0      # i = 0
+set 5 1       # n_iter = r1
+|pow_loop|    # while i != n_iter
+!== 4 1
+return
++v 4 1        # i++
+call {mult}   # multiply
+set 0 2
+jump {pow_loop}

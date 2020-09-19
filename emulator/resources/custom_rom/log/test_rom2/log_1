@@ -1,0 +1,41 @@
+setv A 0
+!==v A 20
+call {end}
+set 1 A
+set 0 A
++v A 1
+call {mult}
+call {disp_r2}
+jump {main_loop}
+setv 2 0
+setv 3 0
+!== 3 1
+return
++v 3 1
++ 2 0
+jump {mult_loop}
+- 0 0
+jump 222
+cls
+setIv 300
+digits 2
+memget 3
+setv 3 8
+setv 4 1B
+setIFont 0
+render 3 4 5
++v 3 6
+setIFont 1
+render 3 4 5
++v 3 6
+setIFont 2
+render 3 4 5
+return
+setv 4 0
+set 5 1
+!== 4 1
+return
++v 4 1
+call {mult}
+set 0 2
+jump {pow_loop}
