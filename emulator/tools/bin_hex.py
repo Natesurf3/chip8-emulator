@@ -116,25 +116,19 @@ def test_convert(fname):
 # ------------------------------------------------------
 # ---------------------| MAIN |-------------------------
 # ------------------------------------------------------
-def prompt(st, end="\n"):
-    end_ = end
-    del end
-    print(st, end=end_)
-    return input()
-
+from prompt import prompt
 if __name__ == "__main__":
     print(">> Welcome to hex-hex repl")
 
     while True:
-        print(">> Press enter to continue or type 'quit' to exit: ", end="")
-        cmnd = input()
+        cmnd = prompt(">> Press enter to continue or type 'quit' to exit: ")
         if cmnd == "quit":
             break;
 
 
-        ifname = prompt(">> ifname: ", end="")
-        iftype = prompt(">> valid iftypes are ['hex', 'bins']: ", end="")
-        ofname = prompt(">> ofname: ", end="")
+        ifname = prompt(">> ifname: ")
+        iftype = prompt(">> valid iftypes are ['hex', 'bins']: ")
+        ofname = prompt(">> ofname: ")
 
         if iftype == "bins":
             binf_to_hexf(ifname, ofname)

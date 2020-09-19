@@ -1,0 +1,34 @@
+ 2 00E0 cls
+ 3 00EE return
+ 4 1xxx jump
+ 5 2xxx call
+ 6 3xyy ==v
+ 7 4xyy !==v
+ 8 5xy0 ==
+ 9 6xyy setv
+10 7xyy +v
+11 8xy0 set
+12 8xy1 |
+13 8xy2 &
+14 8xy3 ^
+15 8xy4 +
+16 8xy5 -
+17 8xy6 >>
+18 8xy7 --
+19 8xyE <<
+20 9xy0 !==
+21 Axxx setIv
+22 Bxxx jumppv
+23 Cxyy randv
+24 Dxyz render
+25 Ex9E ==press
+26 ExA1 !==press
+27 Fx07 getD
+28 Fx0A waitkey
+29 Fx15 setD
+30 Fx18 setS
+31 Fx1E setIp
+32 Fx29 setIFont
+33 Fx33 digits
+34 Fx55 memset
+35 Fx65 memget
