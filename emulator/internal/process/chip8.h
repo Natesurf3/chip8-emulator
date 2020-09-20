@@ -185,13 +185,13 @@ void process(int *cmd, Chip8Data &data) {
       ram[r.i+2] = (r[x]/1)%10;
     break;
     case 34:
-      for(size_t i = 0; i < x; i++) {
+      for(size_t i = 0; i <= x && i < 16; i++) {
         ram[r.i+i] = r[i];
       }
       r.i += x;
     break;
     case 35:
-      for(size_t i = 0; i < x; i++) {
+      for(size_t i = 0; i <= x && i < 16; i++) {
         r[i] = ram[r.i+i];
       }
       r.i += x;
