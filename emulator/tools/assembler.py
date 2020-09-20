@@ -204,8 +204,17 @@ def decompile(fname, is_log=True):
     decompiled_rom = os.path.join(os.getcwd(), "../resources/decompiled_rom")
 
     ifname = os.path.join(curated_rom, fname)
-    ofname = os.path.join(decompiled_rom, "src", os.path.splitex(fname)[0]+".cha")
-    logdir = os.path.join(decompiled_rom, "log", os.path.splitex(fname))
+    ofname = os.path.join(decompiled_rom, "src", os.path.splitext(fname)[0]+".cha")
+    logdir = os.path.join(decompiled_rom, "log", os.path.splitext(fname)[0])
+
+    if os.path.exists(ofname):
+        print("output file exists . . . replace? (y/n)")
+
+        if input() == "y":
+            print("replacing file")
+        else:
+            print("cancelling decompile")
+            return
 
     inf = open(ifname, "rb")
     st = bin_hex.bins_to_hexs(inf.read())
@@ -221,6 +230,8 @@ def decompile(fname, is_log=True):
                 break;
         else:
             st1 += line+"\n"
+
+
 
     ouf = open(ofname, "wt")
     ouf.write(st1)
