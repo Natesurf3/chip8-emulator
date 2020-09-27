@@ -12,22 +12,40 @@ class TextBox:
         self.colors = [GREEN, BLACK, None]
         for i in range(len(colors)):
             self.colors[i] = colors[i]
-
         self.bound = bound
-        self.font = font.SysFont('freesans', 50)
         self.align = align
-        self.setText(text)
+
+        self.font_size = 30
+        self._text = text
+        self.reRender()
 
     def setText(self, text):
-        self._text = text
-        self._text_surf = self.font.render(text, True, self.colors[0], self.colors[1]).convert()
+        if text != self._text:
+            self._text = text
+            self.reRender()
 
     def setColor(self, ix, val):
-        self.colors[ix] = val
-        if True:
-            self.setText(self._text)
+        if self.colors[ix] != val:
+            self.colors[ix] = val
+            self.reRender()
+
+    def setSize(self, height):
+        font_size = round(height * 1.00)
+        if font_size != self.font_size:
+            self.font_size = font_size
+            self.reRender()
+
+    def reRender(self):
+        self.font = font.SysFont('freesans', self.font_size)
+        self._text_surf = self.font.render(self._text, True, self.colors[0], self.colors[1]).convert()
+
 
     def update(self, surf, events):
+        pxbound = convert_to_pxbound(self.bound, surf)
+
+        # update the font
+        self.setSize(pxbound[3])
+
         # measure font
         init_t_size = (
             self._text_surf.get_width(),
@@ -35,7 +53,6 @@ class TextBox:
         )
 
         # scale to fit
-        pxbound = convert_to_pxbound(self.bound, surf)
         ratio = min(pxbound[2] / init_t_size[0], pxbound[3] / init_t_size[1])
         t_size = (
             round(init_t_size[0] * ratio),
