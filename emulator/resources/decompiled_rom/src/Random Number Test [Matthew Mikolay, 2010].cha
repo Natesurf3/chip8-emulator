@@ -1,0 +1,17 @@
+cls
+randv 0 FF
+setIv 224
+digits 0      # store random number
+memget 2
+setIFont 0
+setv 0 0
+setv 3 0
+render 0 3 5
+setIFont 1
+setv 0 5
+render 0 3 5
+setIFont 2
+setv 0 A
+render 0 3 5
+waitkey 0
+jump 200

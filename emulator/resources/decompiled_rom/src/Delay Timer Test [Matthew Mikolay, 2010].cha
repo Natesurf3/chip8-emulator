@@ -1,0 +1,29 @@
+setv 6 1
+call 21E
+waitkey 4
+!==v 4 2
++v 3 1
+!==v 4 8
+- 3 6
+==v 4 5
+jump 202
+setD 3
+getD 3
+call 21E
+==v 3 0
+jump 214
+jump 202
+cls
+setv 5 0
+setIv 23A
+digits 3
+memget 2
+setIFont 0
+render 5 6 5
+setIFont 1
+setv 5 5
+render 5 6 5
+setIFont 2
+setv 5 A
+render 5 6 5
+return

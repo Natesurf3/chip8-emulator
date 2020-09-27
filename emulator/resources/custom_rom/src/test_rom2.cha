@@ -26,11 +26,10 @@ jump {mult_loop}
 jump 222      # repeat
 
 
-|disp_r2|
-/** cls and draw BCD(r2) on screen **/
+|disp_r2| /** cls and print r2 on screen **/
 cls
 setIv 300
-digits 2
+digits 2      # decimal representation
 memget 3
 setv 3 8
 setv 4 1B
@@ -46,7 +45,7 @@ return
 
 
 |pow| /** uses r0:r4, r2 = r1**r2 **/
-/** raise number to the power of another number **/
+      /** raise number to a power **/
 setv 4 0      # i = 0
 set 5 1       # n_iter = r1
 |pow_loop|    # while i != n_iter

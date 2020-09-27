@@ -1,0 +1,140 @@
+waitkey 1
+waitkey 2
+waitkey 3
+waitkey 4
+waitkey 5
+waitkey 6
+cls
+setv 7 1
+call 2CE
++v 8 1
+setIFont 1
+render 7 8 5
+setv 7 B
+call 2CE
++v 8 1
+setIFont 2
+render 7 8 5
+setv 7 17
+call 2CE
++v 8 1
+setIFont 3
+render 7 8 5
+setv 7 21
+call 2CE
++v 8 1
+setIFont 4
+render 7 8 5
+setv 7 2D
+call 2CE
++v 8 1
+setIFont 5
+render 7 8 5
+setv 7 37
+call 2CE
++v 8 1
+setIFont 6
+render 7 8 5
+waitkey D
+setv D 25
+setD D
+jump 260
+setv D 3B
+setD D
+call 2E8
++v 6 1
+!==v 6 A
+jump 26A
+call 2E8
+getD D
+==v D 0
+jump 260
+02D8
+jump 252
+setv 6 0
+call 2E8
+call 2F0
++v 5 1
+!==v 5 6
+jump 27A
+call 2F0
+jump 260
+setv 5 0
+call 2F0
+call 2F8
++v 4 1
+!==v 4 A
+jump 28A
+call 2F8
+jump 260
+setv 4 0
+call 2F8
+call 300
++v 3 1
+!==v 3 6
+jump 29A
+call 300
+jump 260
+setv 3 0
+call 300
+call 308
++v 2 1
+!==v 2 4
+jump 2BA
+!==v 2 A
+jump 2AE
+call 308
+jump 260
+setv 2 0
+call 308
+call 310
++v 1 1
+call 310
+jump 260
+!==v 1 2
+jump 2C2
+call 308
+jump 260
+setv 2 0
+call 308
+call 310
+setv 1 0
+call 310
+jump 260
+setv 8 7
+setIv 2E0
+render 7 8 7
++v 7 1
+return
+F8FA
+setIv F2F
+8F3A
+render B D 4
+FCFC
+FCFC
+FCFC
+FC00
+setv 7 38
+setIFont 6
+render 7 8 5
+return
+setv 7 2E
+setIFont 5
+render 7 8 5
+return
+setv 7 22
+setIFont 4
+render 7 8 5
+return
+setv 7 18
+setIFont 3
+render 7 8 5
+return
+setv 7 C
+setIFont 2
+render 7 8 5
+return
+setv 7 2
+setIFont 1
+render 7 8 5
+return

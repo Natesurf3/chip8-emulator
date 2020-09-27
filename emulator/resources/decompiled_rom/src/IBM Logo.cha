@@ -1,0 +1,66 @@
+cls
+setIv 22A
+setv 0 C
+setv 1 8
+render 0 1 F
++v 0 9
+setIv 239
+render 0 1 F
+setIv 248
++v 0 8
+render 0 1 F
++v 0 4
+setIv 257
+render 0 1 F
++v 0 8
+setIv 266
+render 0 1 F
++v 0 8
+setIv 275
+render 0 1 F
+jump 228
+FF00
+FF00
+==v C 0
+==v C 0
+==v C 0
+==v C 0
+FF00
+FFFF
+00FF
+0038
+003F
+003F
+0038
+00FF
+00FF
+set 0 0
+E000
+E000
+set 0 0
+set 0 0
+E000
+E000
+80F8
+00FC
+003E
+003F
+003B
+0039
+00F8
+00F8
+0300
+0700
+0F00
+jumppv F00
+FB00
+F300
+E300
+!==v 3 E0
+cls
+0080
+0080
+0080
+0080
+cls
+cls

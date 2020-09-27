@@ -1,17 +1,17 @@
-setIv 21E
+setIv 21E     # default: this line
 randv 2 1
 ==v 2 1
-setIv 21A
-render 0 1 4
+setIv 21A     # 50% chance for this line
+render 0 1 4  # draw the line
 +v 0 4
-==v 0 40
+==v 0 40      # loop x
 jump 200
 setv 0 0
 +v 1 4
-==v 1 20
+==v 1 20      # loop y
 jump 200
-jump 218
-set 0 4
+jump 218      # jump to jump to . . .
+set 0 4       # these are actually binary images
 call 10
 call 40
 set 0 1

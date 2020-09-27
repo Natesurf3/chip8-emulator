@@ -1,0 +1,116 @@
+setIv 2CC
+setv A 6
+setv 1 3
+setv B 8
+setv 0 0
+render 0 1 1
++v 0 8
++v B FF
+==v B 0
+jump 20A
++v 1 2
++v A FF
+==v A 0
+jump 206
+setv 6 0
+setv 7 14
+setIv 2CD
+setv 0 20
+setv 1 1E
+render 0 1 1
+setv 3 1D
+setv 2 3F
+& 2 0
++v 7 FF
+!==v 7 0
+jump 2AA
+waitkey F
+setIv 2CB
+render 2 3 1
+setv 5 FF
+randv 4 1
+==v 4 1
+setv 4 FF
+setIv 2CD
+setv C 0
+setv E 4
+!==press E
+setv C FE
+setv E 6
+!==press E
+setv C 2
+render 0 1 1
++ 0 C
+render 0 1 1
+!==v F 1
+jump 298
+!==v 2 0
+setv 4 1
+!==v 2 3F
+setv 4 FF
+!==v 3 0
+jump 2CE
+!==v 3 1F
+jump 2A4
+setIv 2CB
+render 2 3 1
++ 2 4
++ 3 5
+render 2 3 1
+==v F 1
+jump 242
+!==v 3 1E
+jump 298
+setv A 2
+setS A
++v 6 1
+setIv 2CA
+jump 288
+render 2 3 1
+randv 4 1
+==v 4 1
+setv 4 FF
+randv 5 1
+==v 5 1
+setv 5 1
+jump 242
+setv A 3
+setS A
+setIv 2CB
+render 2 3 1
++v 3 FF
+jump 236
+setIv 2CB
+render 2 3 1
+jump 228
+setIv 2CD
+render 0 1 1
+setIv 2F0
+digits 6
+memget 2
+setv 3 18
+setv 4 1B
+setIFont 0
+render 3 4 5
++v 3 5
+setIFont 1
+render 3 4 5
++v 3 5
+setIFont 2
+render 3 4 5
+jump 2C8
+F080
+FFFF
+setIv 2DE
+setv 3 15
+setv 2 10
+render 3 2 5
+setIv 2E3
+setv 3 1D
+render 3 2 5
+jump 2AA
+EE8A
+randv E 8C
+<< A E
+88CC
+<< 8 E

@@ -1,0 +1,90 @@
+jump 219
+!==v D 49
+5353
+!==v 9 4C
+!==v 5 20
+setv 2 79
+call 44
+setv 1 76
+setv 9 64
+call 57
+!==v 9 4E
+5445
+526C
+0C60
+0061
+0065
+0866
+0A67
+006E
+01A2
+setIv DD0
+jump 470
+0830
+!==v 0 12
+call 960
+0061
+jump CA2
+jumppv D0
+jump 4A2
+jumppv D0
+jump 43E
+0112
+!==v 9 70
+0440
+==v 8 6E
+0012
+!==v F 70
+FC40
+006E
+01D0
+jump 4FC
+jump 5FB
+073B
+0012
+5362
+08E2
+9E12
+953C
+007C
+FE63
+jump B82
+00A2
+jumppv D2
+==v 1 64
+00D2
+==v 1 73
+FFD2
+==v 1 3F
+0064
+0133
+0312
+setv D D2
+==v 1 34
+0112
+9177
+0575
+FF82
+0063
+00A2
+setIv DD2
+==v 4 45
+0012
+9776
+FF36
+0012
+==v 9 A2
+jumppv 4F7
+==v 3 F2
+setv 5 63
+jump B64
+0DF1
+call 9D3
+!==v 5 73
+05F2
+call 9D3
+!==v 5 12
+setIv B10
+==v 8 38
+jump 38
++v C FE

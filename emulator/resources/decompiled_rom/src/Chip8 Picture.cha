@@ -1,0 +1,82 @@
+cls
+setIv 248
+setv 0 0
+setv 1 1E
+setv 2 0
+render 2 0 2
+render 2 1 2
++v 2 8
+==v 2 40
+jump 20A
+setv 0 0
+setv 1 3E
+setv 2 2
+setIv 24A
+render 0 2 E
+render 1 2 E
++v 2 E
+render 0 2 E
+render 1 2 E
+setIv 258
+setv 0 B
+setv 1 8
+render 0 1 F
++v 0 A
+setIv 267
+render 0 1 F
++v 0 A
+setIv 276
+render 0 1 F
++v 0 3
+setIv 285
+render 0 1 F
++v 0 A
+setIv 294
+render 0 1 F
+jump 246
+FFFF
+randv 0 C0
+randv 0 C0
+randv 0 C0
+randv 0 C0
+randv 0 C0
+randv 0 C0
+randv 0 C0
+FF80
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+FF81
+| 1 8
+| 1 8
+| 1 8
+FF81
+| 1 8
+| 1 8
+| 1 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+set 0 8
+80FF
+| 1 8
+| 1 8
+| 1 8
+FF80
+set 0 8
+set 0 8
+set 0 8
+FF81
+| 1 8
+| 1 8
+81FF
+| 1 8
+| 1 8
+| 1 8
+FFFF
