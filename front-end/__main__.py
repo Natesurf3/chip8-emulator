@@ -1,6 +1,6 @@
 import pygame
 
-from panels.emulator import Emulator
+from panels.welcome import Welcome
 
 win_init_size = (1024, 512)
 if __name__ == "__main__":
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     panels = []     # filter, clear, extend, etc . . .
-    panels.append(Emulator())
+    panels.append(Welcome())
 
     running = True
     while running:

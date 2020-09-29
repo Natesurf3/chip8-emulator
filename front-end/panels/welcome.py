@@ -35,7 +35,7 @@ class Welcome:
                 "Start",
                 (0.25, 0.25, 0.50, 0.10),
                 [GREEN, BLACK],
-                switch_to(Explorer),
+                switch_to(Explorer.try_from_prompt),
             ),
             Button(
                 "Settings",
