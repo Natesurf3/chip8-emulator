@@ -38,7 +38,7 @@ class Credits:
                 [GREY]
             ),
             TextBox(
-                "copyright 2020 GNU GPL",
+                "chip8-emulator is licensed under GNU GPL",
                 (0.00, 0.94, 1.0, 0.04),
                 [GREY],
             ),
@@ -52,7 +52,7 @@ class Credits:
 
         author_stats = [
             ("Nathan Luke Peters", ["Founding member", "Lead Developer"]),
-            ("Dyllan Matthews", ["Founding Member", "Prototyping + Design"]),
+            ("Dylan Matthews", ["Founding Member", "Prototyping + Design"]),
         ]
         y = 0.40
         h = 0.06

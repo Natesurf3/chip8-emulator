@@ -39,3 +39,7 @@ resources: This folder mostly holds ROM and ROM-related stuff
 .cha: chip8 assembly  
 .hex: chip8 machine code as hexadecimal text **(ROM format)**  
 .ch8: chip8 machine code raw  
+
+
+# Legal
+This project is licensed under the GNU General Public License
