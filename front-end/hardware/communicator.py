@@ -8,7 +8,7 @@ class Communicator():
 		self.sock = context.socket(zmq.REQ)
 
 	def connect(self):
-		self.sock.bind("tcp://*:3000")
+		self.sock.connect("tcp://127.0.0.1:3000")
 
 	def send(self, data):
 		self.sock.send_string(json.dumps(data))
