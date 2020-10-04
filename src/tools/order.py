@@ -30,4 +30,4 @@ def convert_interactive():
 
 if __name__ == "__main__":
     if 0: convert_interactive()
-    else: convert("./../../doc/research.md", "./../../doc/research_sorted.md")
+    else: convert("../../doc/research.md", "../../doc/research_sorted.md")

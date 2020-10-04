@@ -7,7 +7,8 @@
 #include <string>
 #include <cassert>
 
-#include "../external/console_header/ext_display.h"
+#include "./communicator/console_frontend/ext_keyboard.h"
+#include "./communicator/console_frontend/ext_display.h"
 #include "./process/chip8.h"
 
 #include "./process/hexpat.h"
@@ -20,6 +21,7 @@ using namespace text;
 using namespace tps_timer;
 
 namespace emulator {
+  static double tick_rate = 200;
 
   class Emulator {
   public:
@@ -29,10 +31,11 @@ namespace emulator {
       Chip8Data data;
       HexList instr;
       ExtDisplay disp;
-      TPSTimer tps = TPSTimer(1.0/100.0);
+      ExtKeyboard keyb;
+      TPSTimer tps = TPSTimer(1.0/tick_rate);
 
       //assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
-      assert(data.ram.load_rom_binary("../resources/curated_rom/PONG"));
+      assert(data.ram.load_rom_binary("../../rom/curated_rom/PONG"));
 
       for(int tick_n = 0; tick_n <= 99999; tick_n++) {
         log("tick: ", tick_n);
@@ -52,6 +55,8 @@ namespace emulator {
         //------------------- end ------------------------
         disp.update(data);
         disp.communicate();
+        //keyb.update(data);
+        //keyb.communicate(tick_rate);
         flush_log();
         tps.delay_tick();
       }

@@ -1,9 +1,9 @@
 import pygame
-from hardware.communicator import Communicator
+
+from communicator.communicator import Communicator
 from hardware.keyboard import Keyboard
 from hardware.screen import Screen
 from hardware.sound import Sound
-
 from panels import welcome
 
 class Emulator:

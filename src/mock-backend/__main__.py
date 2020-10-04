@@ -24,7 +24,6 @@ t = 0
 def create_response(req):
     global t
     t += 32*64
-    print(t)
     if 'frame' in req['content']:
         return {
             'content': ["frame"],

@@ -1,7 +1,5 @@
 # How to communicate between processes
-
-This is just a document to put ideas about communication so that we can keep track across files  
-Nothing is set in stone, so if there's any other stuff please add  
+This is just a document to keep track of stuff across files  
 
 ### high level ideas
 backend needs to send:  

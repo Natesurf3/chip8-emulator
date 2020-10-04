@@ -32,7 +32,7 @@ def clamp_str(st, length):
 class Explorer:
     def try_from_prompt():
         cwd = os.getcwd()
-        os.chdir("../emulator/resources/curated_rom")
+        os.chdir("../../rom/curated_rom")
         file_path = filedialog.askopenfilename()
         os.chdir(cwd)
 

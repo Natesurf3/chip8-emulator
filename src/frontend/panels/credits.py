@@ -8,7 +8,7 @@
 # Dyllan Matthews       |    Founding Member
 #                       |    Prototyping + Design
 #
-# copyright 2020 GNU GPL
+# licenced under GNU GPL
 
 from gui.text import TextBox
 from gui.button import Button

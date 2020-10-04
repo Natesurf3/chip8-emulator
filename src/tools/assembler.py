@@ -170,7 +170,7 @@ def compile_B(st, iset):
 import os
 import bin_hex
 def compile(fname, is_log=True):
-    custom_rom = os.path.join(os.getcwd(), "../resources/custom_rom")
+    custom_rom = os.path.join(os.getcwd(), "../../rom/custom_rom")
     ifname = os.path.join(custom_rom, "src", fname)
     ofname = os.path.join(custom_rom, "bin", os.path.splitext(fname)[0]+".ch8")
     logdir = os.path.join(custom_rom, "log", os.path.splitext(fname)[0])
@@ -200,8 +200,8 @@ def compile(fname, is_log=True):
 # decompiling any of part A will probably never happen
 # however this is reasonable:
 def decompile(fname, is_log=True):
-    curated_rom = os.path.join(os.getcwd(), "../resources/curated_rom")
-    decompiled_rom = os.path.join(os.getcwd(), "../resources/decompiled_rom")
+    curated_rom = os.path.join(os.getcwd(), "../../rom/curated_rom")
+    decompiled_rom = os.path.join(os.getcwd(), "../../rom/decompiled_rom")
 
     ifname = os.path.join(curated_rom, fname)
     ofname = os.path.join(decompiled_rom, "src", os.path.splitext(fname)[0]+".cha")
