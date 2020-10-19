@@ -13,7 +13,7 @@ public:
   ExtKeyboard() {}
 
   void update(Chip8Data data) {
-    data.keys.push_back(is_key);
+//    data.keys.push_back(is_key);
   }
 
   void communicate(double tick_rate) {
