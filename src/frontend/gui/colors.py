@@ -21,3 +21,9 @@ def blend(c1, c2, amount=0.5):
         c1[1]*(1-amount) + c2[1]*amount,
         c1[2]*(1-amount) + c2[2]*amount
     )
+
+# left shouldnt be shorter than right
+def combine_left(left, right):
+    result = right[:]
+    result.extend(left[len(right):])
+    return result

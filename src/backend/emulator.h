@@ -9,60 +9,92 @@
 
 #include "./communicator/console_frontend/ext_keyboard.h"
 #include "./communicator/console_frontend/ext_display.h"
-#include "./process/chip8.h"
+#include "./communicator/communicator.h"
 
+#include "./process/chip8.h"
 #include "./process/hexpat.h"
 #include "./util/logger.h"
 #include "./util/text.h"
 #include "./util/tps_timer.h"
+
 using namespace hexpat;
 using namespace logger;
 using namespace text;
 using namespace tps_timer;
 
 namespace emulator {
-  static double tick_rate = 200;
+  double tick_rate = 600;
+  double msg_rate = 20;
+
+  int mode = 0;
+  int tick_n = 0;
+
+  Chip8Data data;
+  HexList instr;
+
+  Communicator com;
+  double send_carry = 0;
 
   class Emulator {
   public:
     Emulator() {}
 
+    void frame_tick() {
+      // grab instruction
+      int cmnd[4];
+      bool match = instr.try_match(cmnd, data.ram.get_instr(data.r.pc));
+
+      //log
+      log("tick: ", tick_n);
+      data.log();
+      log("\tcmnd: ", 4, cmnd);
+
+      //execute instruction
+      if(match) process(cmnd, data);
+      else log("\tinstruction not processable");
+      data.tick(1.0/tick_rate);
+      tick_n += 1;
+    }
+
     void run() {
-      Chip8Data data;
-      HexList instr;
-      ExtDisplay disp;
-      ExtKeyboard keyb;
-      TPSTimer tps = TPSTimer(1.0/tick_rate);
-
       //assert(data.ram.load_rom_binary("../resources/custom_rom/test_rom.ch8"));
-      assert(data.ram.load_rom_binary("../../rom/curated_rom/PONG"));
 
-      for(int tick_n = 0; tick_n <= 99999; tick_n++) {
-        log("tick: ", tick_n);
+      while(true) {
+        send_carry += msg_rate / tick_rate;
+        if(send_carry >= 1) {
+          send_carry -= 1;
 
-        //---------- emulator tick internal --------------
-        // grab instruction
-        int cmnd[4];
-        bool match = instr.try_match(cmnd, data.ram.get_instr(data.r.pc));
-        //log
-        data.log();
-        log("\tcmnd: ", 4, cmnd);
-        //execute instruction
-        if(match) process(cmnd, data);
-        else log("\tinstruction not processable");
-        //tick
-        data.tick(tps.dt);
-        //------------------- end ------------------------
-        disp.update(data);
-        disp.communicate();
-        //keyb.update(data);
-        //keyb.communicate(tick_rate);
-        flush_log();
-        tps.delay_tick();
+          InMessage in = com.recv();
+          OutMessage out = OutMessage();
+
+          if(in.is_state) {
+            if(in.state == "start") {
+              mode = 1;
+              assert(data.ram.load_rom_binary(in.start_path));
+            }
+            if(in.state == "stop") {
+              mode = 0;
+              data.reset();
+              log("Emulator closed");
+            }
+          }
+          if(in.is_frame) {
+            out.set_frame(false, data.display.get_display(), (data.r.stm != 0));
+            data.keys.set_state(in.keystate);
+            data.keys.tick();
+          }
+          com.send(out);
+          flush_log();
+        }
+        if(mode == 1) {
+          frame_tick();
+        }
+        else if(mode == 0) {
+          // wait for mode == 1
+        }
       }
 
-      log("Emulator closed");
-      log("Runtime: " + std::to_string(tps.runtime()) + " seconds.");
+      //log("Runtime: " + std::to_string(tps.runtime()) + " seconds.");
     }
   };
 }

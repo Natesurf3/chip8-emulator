@@ -1,6 +1,9 @@
 # How to communicate between processes
 This is just a document to keep track of stuff across files  
 
+### JSON specifics
+The json library uses ascii + escape characters by default
+
 ### high level ideas
 backend needs to send:  
  * graphics  

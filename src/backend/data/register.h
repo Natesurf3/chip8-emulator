@@ -31,11 +31,22 @@ public:
   uint16_t pc = 0x200;
   uint16_t stack[16] = {};
 
-  uint8_t& operator[](std::size_t ix) { return __arr[ix]; }
-  const uint8_t& operator[](std::size_t ix) const { return __arr[ix]; }
+  uint8_t& operator[](std::size_t ix) {
+    if(ix >= 16) {
+      assert(false); // TODO: better runtime error system
+    }
+    return __arr[ix];
+  }
+  const uint8_t& operator[](std::size_t ix) const {
+    if(ix >= 16) {
+      assert(false);
+    }
+    return __arr[ix];
+  }
 
 
   uint8_t rand() {
+    std::cout << "-----------------------\n" << "====== RAND CALLED =====" << "-----------------\n" << std::endl;
     return rand_u8(rng);
   }
 

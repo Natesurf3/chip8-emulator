@@ -23,6 +23,9 @@ uint8_t N_MAX = 0x10;
 uint16_t BY_MAX = 0x100;
 uint16_t P_MAX = 0x1000;
 
+int shift_mode = 1;
+int i_mode = 1;
+int rand_mode = 1;
 
 //  nibble r.st
 //  byte r[16]
@@ -62,7 +65,7 @@ void process(int *cmd, Chip8Data &data) {
       r.pc = r.stack[r.st]; //bug fixed
     break;
     case 4:
-      data.r.pc = x-2;
+      r.pc = x-2;
     break;
     case 5:
       r.stack[r.st] = r.pc;
@@ -107,16 +110,28 @@ void process(int *cmd, Chip8Data &data) {
       r[x] = r[x]-r[y];
     break;
     case 17:
-      r[0xF] = r[y]%2;
-      r[x] = (r[y] >> 1);
+      if(shift_mode == 0) {
+        r[0xF] = r[y] & 0x1;
+        r[x] = (r[y] >> 1);
+      }
+      else {
+        r[0xF] = r[x] & 0x1;
+        r[x] = (r[x] >> 1);
+      }
     break;
     case 18:
       r[0xF] = (r[y] >= r[x]);
       r[x] = r[y]-r[x];
     break;
     case 19:
-      r[0xF] = r[y] >> 7;
-      r[x] = (r[y] << 1);
+      if(shift_mode == 0) {
+        r[0xF] = (r[y] >> 7) & 0x1;
+        r[x] = (r[y] << 1);
+      }
+      else {
+        r[0xF] = (r[x] >> 7) & 0x1;
+        r[x] = (r[x] << 1);
+      }
     break;
     case 20:
       if(r[x] != r[y]) r.pc = r.pc+2;
@@ -128,7 +143,17 @@ void process(int *cmd, Chip8Data &data) {
       r.pc = x + r[0] - 2;
     break;
     case 23:
-      r[x] = y & r.rand();
+      if(rand_mode == 1) {
+        uint8_t v;
+        while( (v=r.rand()) >= y) {}
+        r[x] = v;
+      }
+      else if(rand_mode == 0) {
+        r[x] = y & r.rand();
+      }
+      else {
+        assert(false);
+      }
     break;
     case 24: {
       r[0xF] = 0;
@@ -138,19 +163,19 @@ void process(int *cmd, Chip8Data &data) {
         for(size_t dx = 0; dx < 8; dx++) {
           bool bit = (byte>>(7-dx))&0b1;
           bool pixel = display.get(r[x]+dx, r[y]+dy);
-          r[0xF] = bit&pixel;
+          r[0xF] |= bit&pixel;
           display.set(r[x]+dx, r[y]+dy, bit^pixel);
         }
       }
     }
     break;
     case 25:
-      if(keys.curr[r[x]] == true) {
+      if(keys.get_curr(r[x]) == true) {
         r.pc = r.pc+2;
       }
     break;
     case 26:
-      if(keys.curr[r[x]] != true) {
+      if(keys.get_curr(r[x]) != true) {
         r.pc = r.pc+2;
       }
     break;
@@ -159,8 +184,9 @@ void process(int *cmd, Chip8Data &data) {
     break;
     case 28: {
       for(size_t i = 0; i < 16; i++) {
-        if(keys.curr[i] == true && keys.last[i] == false) {
+        if(keys.get_curr(i) == true && keys.get_last(i) == false) {
           r[x] = i;
+          r.pc += 2;
           break;
         }
       }
@@ -177,7 +203,7 @@ void process(int *cmd, Chip8Data &data) {
       r.i = (r.i+r[x])%P_MAX;
     break;
     case 32:
-      r.i = ram.font_sprite_addrs[r[x]];
+      r.i = ram.get_font_sprite_addr(r[x]);
     break;
     case 33:
       ram[r.i+0] = (r[x]/100)%10;
@@ -188,16 +214,16 @@ void process(int *cmd, Chip8Data &data) {
       for(size_t i = 0; i <= x && i < 16; i++) {
         ram[r.i+i] = r[i];
       }
-      r.i += x;
+      if(i_mode == 0) r.i += x;
     break;
     case 35:
       for(size_t i = 0; i <= x && i < 16; i++) {
         r[i] = ram[r.i+i];
       }
-      r.i += x;
+      if(i_mode == 0) r.i += x;
     break;
     default:
-      assert(false);
+      assert(false); // TODO: better error system
     break;
   }
 }

@@ -10,7 +10,7 @@
 #
 # licenced under GNU GPL
 
-from gui.text import TextBox
+from gui.text import Text
 from gui.button import Button
 from gui.rectangle import Rectangle
 from gui.colors import *
@@ -25,19 +25,19 @@ class Credits:
         self.elements = [
             Rectangle(
                 (0.00, 0.00, 1.00, 1.00),
-                BLACK,
+                [BLACK],
             ),
-            TextBox(
+            Text(
                 "CHIP8 Emulator Version 0.0",
                 (0.0, 0.05, 1.0, 0.08),
-                [GREEN]
+                [GREEN],
             ),
-            TextBox(
+            Text(
                 "Contributors",
                 (0.00, 0.20, 1.0, 0.08),
-                [GREY]
+                [GREY],
             ),
-            TextBox(
+            Text(
                 "chip8-emulator is licensed under GNU GPL",
                 (0.00, 0.94, 1.0, 0.04),
                 [GREY],
@@ -59,7 +59,7 @@ class Credits:
         sp = 0.09
         ep = 0.09
         for (name, roles) in author_stats:
-            self.elements.append(TextBox(
+            self.elements.append(Text(
                 name,
                 (0.12, y, 0.35, h),
                 [GREY_LIGHT, BLACK],
@@ -70,7 +70,7 @@ class Credits:
                 y += sp
 
             for role in roles:
-                self.elements.append(TextBox(
+                self.elements.append(Text(
                     role,
                     (0.53, y, 0.44, h),
                     [GREY, BLACK],

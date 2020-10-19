@@ -5,13 +5,13 @@ from pygame import draw
 from gui.boundry import convert_to_pxbound
 from gui.colors import *
 
-# colors = (text=foreground, background, border)
-# align = "left" or "center" or "right"
-class TextBox:
+class Text:
     def __init__(self, text, bound, colors=[], align="center"):
-        self.colors = [GREEN, BLACK, None]
-        for i in range(len(colors)):
-            self.colors[i] = colors[i]
+        self.colors = combine_left(
+            [GREEN],
+            colors
+        )
+
         self.bound = bound
         self.align = align
 
@@ -37,7 +37,8 @@ class TextBox:
 
     def reRender(self):
         self.font = font.SysFont('freesans', self.font_size)
-        self._text_surf = self.font.render(self._text, True, self.colors[0], self.colors[1]).convert()
+        self._text_surf = self.font.render(self._text, True, self.colors[0], None)
+        self._text_surf = self._text_surf.convert_alpha()
 
 
     def update(self, surf, events):
@@ -49,7 +50,7 @@ class TextBox:
         # measure font
         init_t_size = (
             self._text_surf.get_width(),
-            self.font.get_height()*1.3,
+            self.font.get_height(), # *1.3
         )
 
         # scale to fit
@@ -67,11 +68,5 @@ class TextBox:
         )
 
         # draw
-        if self.colors[1] != None:
-            draw.rect(surf, self.colors[1], pxbound)
-
-        if self.colors[2] != None:
-            draw.rect(surf, self.colors[2], pxbound, 1+int(pxbound[3]/35))
-
         text_surf = transform.scale(self._text_surf, t_size)
         surf.blit(text_surf, t_loc)

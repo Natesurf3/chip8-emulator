@@ -16,7 +16,7 @@ from tkinter import filedialog
 tk.Tk().withdraw() # removes extra window
 
 from gui.boundry import convert_to_pxbound
-from gui.text import TextBox
+from gui.text import Text
 from gui.colors import *
 from gui.rectangle import Rectangle
 from gui.util import context_switcher
@@ -32,7 +32,7 @@ def clamp_str(st, length):
 class Explorer:
     def try_from_prompt():
         cwd = os.getcwd()
-        os.chdir("../../rom/curated_rom")
+        os.chdir("../../rom")
         file_path = filedialog.askopenfilename()
         os.chdir(cwd)
 
@@ -48,14 +48,14 @@ class Explorer:
         self.constant_elements = [
             Rectangle(
                 (0.00, 0.00, 1.00, 1.00),
-                BLACK,
+                [BLACK],
             ),
-            TextBox(
+            Text(
                 "SELECT A ROM",
                 (0.35, 0.05, 0.30, 0.10),
-                [GREEN]
+                [GREEN],
             ),
-            TextBox(
+            Text(
                 file_path,
                 (0.15, 0.20, 0.70, 0.07),
                 [GREY_LIGHT],
@@ -64,7 +64,7 @@ class Explorer:
                 "Start",
                 (0.30, 0.60, 0.40, 0.15),
                 [BLACK],
-                switch_to(emulator.Emulator),
+                switch_to(lambda: emulator.Emulator(file_path)),
             ),
             Button(
                 "X",

@@ -14,14 +14,36 @@ using namespace logger;
 
 class Ram {
   uint8_t __arr[4096] = {};
-
-public:
   uint16_t font_sprite_addrs[16] = {};
 
-  uint8_t& operator[](std::size_t ix) { return __arr[ix]; }
-  const uint8_t& operator[](std::size_t ix) const { return __arr[ix]; }
+public:
+  uint16_t get_font_sprite_addr(uint8_t ix) {
+    if(ix >= 16) {
+      assert(false);
+    }
+    return font_sprite_addrs[ix];
+  }
+  uint8_t& operator[](std::size_t ix) {
+    if(ix >= 4096) {
+      assert(false); // TODO: better runtime error system
+    }
+    return __arr[ix];
+  }
+  const uint8_t& operator[](std::size_t ix) const {
+    if(ix >= 4096) {
+      assert(false);
+    }
+    return __arr[ix];
+  }
 
   Ram() {
+    bool is_zeroed = true;
+    for(size_t i = 0; i < 4096; i++) {
+      if(__arr[i] != 0) {
+        is_zeroed = false;
+      }
+    }
+    assert(is_zeroed);
     load_font();
   }
 

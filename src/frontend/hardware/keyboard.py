@@ -9,9 +9,12 @@ class Keyboard():
 			pygame.K_f
 		]
 
-	def getPressed(self):
-		pressed = []
-		for key in pygame.key.get_pressed():
-			if key in self.watch_list:
-				pressed.append(pygame.key.name(key))
-		return pressed
+	def getKeystate(self):
+		keystate = [False] * 16
+		pygame.event.pump()
+		all_keystate = pygame.key.get_pressed()
+		for i in range(16):
+			if all_keystate[self.watch_list[i]]:
+				keystate[i] = True
+#		print("keystate"+str(keystate))
+		return keystate

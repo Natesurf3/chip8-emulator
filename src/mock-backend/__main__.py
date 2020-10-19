@@ -1,6 +1,6 @@
 import zmq
 import json
-
+#TODO: Depreciated
 # abstracting out sockets
 class Communicator():
     def __init__(self):

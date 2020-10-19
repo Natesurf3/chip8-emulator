@@ -6,7 +6,7 @@
 # screen size
 # instruction set
 
-from gui.text import TextBox
+from gui.text import Text
 from gui.rectangle import Rectangle
 from gui.colors import *
 from gui.button import Button
@@ -21,11 +21,11 @@ class Settings:
         self.elements = [
             Rectangle(
                 (0,0,1,1),
-                BLACK,
+                [BLACK],
             ),
-            TextBox(
+            Text(
                 "Settings",
-                (0.00, 0.05, 1.00, 0.10)
+                (0.00, 0.05, 1.00, 0.10),
             ),
             Button(
                 "X",

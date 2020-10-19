@@ -44,6 +44,19 @@ namespace logger {
 
     log(out);
   }
+
+  void log(const std::string str, size_t len, const bool *n) {
+    std::string out = str+"{";
+    for(int i = 0; i < len; i++) {
+      out += std::to_string(n[i]);
+      if(i != (len-1))
+        out += ",";
+    }
+    out += "}";
+
+    log(out);
+  }
+
 }
 
 #endif

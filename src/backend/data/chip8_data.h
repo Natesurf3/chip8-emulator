@@ -45,17 +45,27 @@ public:
   Display display;
   Keyboard keys;
 
+  Chip8Data() {};
+
   void tick(double dt) {
     r.tick(dt);
+    keys.tick();
+    display.tick();
   }
 
-  Chip8Data() {};
+  void reset() {
+    r = Register();
+    ram = Ram();
+    display = Display();
+    keys = Keyboard();
+  }
 
   void log() {
     int a[3] = {r.i, r.dtm, r.stm};
     logger::log("\tpc_ln: ", r.pc/2-255);
     logger::log("\t{r.i, r.dtm, r.stm}: ", 3, a);
-    logger::log("\treg: ", 16, (uint8_t *)r.__arr);
+    logger::log("\treg: ", 16, r.__arr);
+    logger::log("\tkeys: ", 16, keys.curr);
   }
 };
 

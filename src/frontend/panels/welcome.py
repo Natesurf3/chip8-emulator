@@ -6,7 +6,7 @@
 #         |Credits|
 #
 
-from gui.text import TextBox
+from gui.text import Text
 from gui.rectangle import Rectangle
 from gui.button import Button
 from gui.colors import *
@@ -25,9 +25,9 @@ class Welcome:
         self.elements = [
             Rectangle(
                 (0,0,1,1),
-                BLACK,
+                [BLACK],
             ),
-            TextBox(
+            Text(
                 "CHIP8 Emulator",
                 (0.35, 0.05, 0.30, 0.10),
             ),
@@ -47,7 +47,7 @@ class Welcome:
                 "Help",
                 (0.25, 0.55, 0.50, 0.10),
                 [GREEN, BLACK],
-                switch_to(Help)
+                switch_to(Help),
             ),
             Button(
                 "Credits",
@@ -55,12 +55,13 @@ class Welcome:
                 [GREEN, BLACK],
                 switch_to(Credits),
             ),
-            Button(
-                "X",
-                (0.90, 0.02, 0.08, 0.08),
-                [BLACK, GREY_DARK, None, GREY_BLACK, blend(GREY_BLACK,BLACK)],
-                switch_to(None),
-            ),
+
+#            Button(
+#                "X",
+#                (0.90, 0.02, 0.08, 0.08),
+#                [BLACK, GREY_DARK, None, GREY_BLACK, blend(GREY_BLACK,BLACK)],
+#                switch_to(None),
+#            ),
         ]
 
     def tick(self, surf, events, panels):
